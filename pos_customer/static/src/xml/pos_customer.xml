@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1:
+-->
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="PosWidget">
+        <t t-jquery=".placeholder-UsernameWidget" t-operation="before">
+            <span class="placeholder-NotesWidget"></span>
+        </t>
+
+        <!--<t t-jquery=".placeholder-OnscreenKeyboardWidget" t-operation="before">
+            &lt;!&ndash;<div class="placeholder-OnscreenKeyboardWidget1"></div>&ndash;&gt;
+            &lt;!&ndash;<div class="placeholder-OnscreenKeyboardWidget2"></div>
+            <div class="placeholder-OnscreenKeyboardWidget3"></div>&ndash;&gt;
+        </t>-->
+    </t>
+
+    <t t-extend="OnscreenKeyboardFull">
+        <t t-jquery=".close_button" t-operation="after">
+            <p class="done_button">done</p>
+        </t>
+    </t>
+
+    <t t-extend="OnscreenKeyboardSimple">
+        <t t-jquery=".close_button" t-operation="after">
+            <p class="done_button">done</p>
+        </t>
+    </t>
+
+    <t t-name="NotesWidget">
+        <span class="notes">
+            Notes
+        </span>
+    </t>
+
+    <!--<t t-name="NotesInputFieldWidget">
+        <span class="notes">
+            <t t-esc="widget.get_name()" />
+        </span>
+    </t>-->
+
+    <t t-name="NotesPopupWidget">
+        <div class="modal-dialog">
+            <div class="popup popup-help">
+                <div class="modal-header">
+                    <h3>Customer Preferences Note</h3>
+                </div>
+                <div class="modal-body">
+                   <form class="form-horizontal">
+                       <div class="form-group">
+                            <label for="text1" class="control-label col-lg-4">Name</label>
+                            <div class="col-lg-8">
+                              <input type="text" id="text1" placeholder="Name" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="text2" class="control-label col-lg-4">Phone</label>
+                            <div class="col-lg-8">
+                              <input type="text" id="text2" placeholder="Phone Number" class="form-control"/>
+                            </div>
+                        </div>
+                       <div class="form-group">
+                            <label for="text4" class="control-label col-lg-4">Email</label>
+                            <div class="col-lg-8">
+                              <input type="text" id="text4" placeholder="Email" class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="text3" class="control-label col-lg-4">Note</label>
+                            <div class="col-lg-8">
+                              <textarea id="text3" class="form-control"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="footer">
+                <div class="button" id="pop_ok_button">
+                    Ok
+                </div>
+                <div class="button" id="pop_cancel_button">
+                    Cancel
+                </div>
+            </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="FailureActionPopUpWidget">
+        <div class="modal-dialog">
+            <div class="popup popup-help">
+                <p class="message">You should refill all fields of this window.</p>
+                <div class="footer">
+                    <div class="button">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="SuccessActionPopUpWidget">
+        <div class="modal-dialog">
+            <div class="popup popup-help">
+                <p class="message">Congratulations! You have added a new customer note to this point of sale.</p>
+                <div class="footer">
+                    <div class="button">
+                        Ok
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>
+
+
