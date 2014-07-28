@@ -30,9 +30,6 @@
     'description': "Point of Sale extension to add customers",
     'author': 'Groceries S.A',
     'depends': ['point_of_sale'],
-    'qweb': [
-        'static/src/xml/pos_customer.xml'
-    ],
     'js': [
         'static/src/js/models.js',
         'static/src/js/widget_keyboard.js',
@@ -43,6 +40,9 @@
     'css': [
         'static/src/css/keyboard_ext.css',
         'static/src/css/pos_customer.css'
+    ],
+    'qweb': [
+        'static/src/xml/pos_customer.xml'
     ],
     'installable': True,
     'auto_install': False,
