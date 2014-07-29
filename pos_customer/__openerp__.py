@@ -31,7 +31,6 @@
     'author': 'Groceries S.A',
     'depends': ['point_of_sale'],
     'js': [
-        'static/src/js/models.js',
         'static/src/js/widget_keyboard.js',
         'static/src/js/widgets.js',
         'static/src/js/screens.js',

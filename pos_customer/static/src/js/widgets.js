@@ -1,4 +1,4 @@
-function openerp_pos_widgets_ext(instance, module){ //module is instance.point_of_sale_gr_ext
+function openerp_pos_widgets_ext(instance, module){ //module is instance.pos_customer
     var QWeb = instance.web.qweb;
 	var _t = instance.web._t;
 

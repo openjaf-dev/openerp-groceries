@@ -29,7 +29,7 @@
 
     <t t-name="NotesWidget">
         <span class="notes">
-            Notes
+            Customer
         </span>
     </t>
 
