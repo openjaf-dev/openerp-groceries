@@ -1,4 +1,4 @@
-function openerp_pos_widgets_ext(instance, module){ //module is instance.pos_customer
+function openerp_pos_widgets_ext(instance, module){ //module is instance.point_of_sale_gr_ext
     var QWeb = instance.web.qweb;
 	var _t = instance.web._t;
 
@@ -24,11 +24,11 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.pos_cus
             this._super();
 
             this.$el.click(function(parent){
-                self.new_customer_note_popup = new module.NotesPopupWidget(self.pos_widget, {});
-                self.new_customer_note_popup.appendTo(self.pos_widget.$el);
+                /*self.new_customer_note_popup = new module.NotesPopupWidget(self.pos_widget, {});
+                self.new_customer_note_popup.appendTo(self.pos_widget.$el);*/
 
-                self.pos_widget.screen_selector.add_popup('customer_note',self.new_customer_note_popup);
-                self.pos_widget.screen_selector.show_popup('customer_note');
+               /* self.pos_widget.screen_selector.add_popup('customer_note',self.new_customer_note_popup);*/
+                self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
             });
 
         },
@@ -103,11 +103,16 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.pos_cus
             this.error_invoice_transfer_popup = new instance.point_of_sale.ErrorInvoiceTransferPopupWidget(this, {});
             this.error_invoice_transfer_popup.appendTo(this.$el);
 
-            this.failure_action_popup = new module.FailureActionPopUpWidget(this, {});
-            this.failure_action_popup.appendTo(this.$el);
+           /* this.failure_action_popup = new module.FailureActionPopUpWidget(this, {});
+            this.failure_action_popup.appendTo(this.$el);*/
 
             this.success_action_popup = new module.SuccessActionPopUpWidget(this, {});
             this.success_action_popup.appendTo(this.$el);
+
+
+
+            this.new_customer_note_popup = new module.NotesPopupWidget(this, {pos:this.pos});
+            this.new_customer_note_popup.appendTo(this.$el);
 
             // --------  Misc ---------
 
@@ -179,8 +184,9 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.pos_cus
                     'choose-receipt': this.choose_receipt_popup,
                     'error-no-client': this.error_no_client_popup,
                     'error-invoice-transfer': this.error_invoice_transfer_popup,
-                    'failure_action_popup':this.failure_action_popup,
+                    /*'failure_action_popup':this.failure_action_popup,*/
                     'success_action_popup':this.success_action_popup,
+                    'new_customer_note_popup':this.new_customer_note_popup,
 
                 },
                 default_client_screen: 'welcome',

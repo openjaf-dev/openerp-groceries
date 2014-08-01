@@ -1,0 +1,118 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* point_of_sale_gr_ext
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.0dev\n"
+"Report-Msgid-Bugs-To: support@openerp.com\n"
+"POT-Creation-Date: 2012-12-21 17:04+0000\n"
+"PO-Revision-Date: 2012-12-22 11:40+0000\n"
+"Last-Translator: Pedro Manuel Baeza <pedro.baeza@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-01-28 05:45+0000\n"
+"X-Generator: Launchpad (build 16914)\n"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Congratulations! You have added a new customer note to this point of sale."
+msgstr "¡Enhorabuena! Usted a adicionado una nueva nota de cliente a este punto de venta."
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "You should refill all fields of this window."
+msgstr "Debe rellenar todos los campos de esta ventana."
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Customer Preferences Note"
+msgstr "Nota de Cliente"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Information"
+msgstr "Información"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Phone Number"
+msgstr "Número Teléfonico"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Note"
+msgstr "Nota"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "Notes"
+msgstr "Notas"
+
+#. module: point_of_sale_gr_ext
+#. openerp-web
+#: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
+#, python-format
+msgid "done"
+msgstr "hecho"
+
+#. module: point_of_sale_gr_ext
+#: field:pos.customer,note:0
+msgid "Note about customer preferences"
+msgstr "Nota de Cliente"
+
+#. module: point_of_sale_gr_ext
+#: field:pos.customer,pos_session:0
+msgid "Point of Sale Session"
+msgstr "Punto de Venta"
+
+#. module: point_of_sale_gr_ext
+#: field:pos.customer,phone_number:0
+msgid "Phone Number"
+msgstr "Número Teléfonico"
+
+#. module: point_of_sale_gr_ext
+#: field:pos.customer,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: point_of_sale_gr_ext
+#: model:ir.actions.act_window,name:point_of_sale_gr_ext.pos_customers_action
+#: model:ir.ui.menu,name:point_of_sale_gr_ext.menu_point_of_sale_customers
+#: model:ir.ui.menu,name:point_of_sale_gr_ext.menu_pos_customers
+#: view:pos.order:0
+msgid "Customers"
+msgstr "Clientes"
+
+#. module: base
+#: field:res.partner,name:0
+msgid "Name"
+msgstr "Nombre"
+
+#. module: point_of_sale_gr_ext
+#: field:pos.note,comment:0
+msgid "Notes"
+msgstr "Notas"

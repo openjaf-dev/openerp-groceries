@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+       <!-- <record id="view_pos_customer_tree" model="ir.ui.view">
+            <field name="name">pos.customer.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_account_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="replace">
+                </xpath>
+                <tree string="Point of Sale Customers">
+                    <field name="name"/>
+                    <field name="mobile"/>
+                    <field name="email"/>
+                    <field name="comment"/>
+                    &lt;!&ndash;<field name="pos_session"/>&ndash;&gt;
+                </tree>
+            </field>
+        </record>-->
+
+        <record id="pos_note_view_partner_form" model="ir.ui.view">
+            <field name="name">pos.note.partner.form.inherit</field>
+            <field name="model">pos.note</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <field name="comment"/>
+            </field>
+        </record>
+
+        <record id="pos_customer_view_partner_form" model="ir.ui.view">
+            <field name="name">pos.customers.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='comment']" position="replace">
+                    <field name="notes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="pos_customers_action" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+
+        <menuitem name="Customers" id="menu_point_of_sale_customers" parent="point_of_sale.menu_point_root" sequence="17" />
+
+        <menuitem
+            action="pos_customers_action"
+            id="menu_pos_customers"
+            parent="menu_point_of_sale_customers" sequence="1"/>
+
+    </data>
+</openerp>

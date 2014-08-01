@@ -21,28 +21,32 @@
 
 
 {
-    'name': 'Point of Sale Customer',
+    'name': 'Point of Sale Groceries Extension',
     'version': '1.0',
     'author': 'Antonio Mauri Garcia',
     'category': 'Point Of Sale',
-    'sequence': 6,
-    'summary': 'Touchscreen Interface for Shops',
-    'description': "Point of Sale extension to add customers",
+    'description': "Adding new feature to create a note partner in pos box.",
     'author': 'Groceries S.A',
     'depends': ['point_of_sale'],
+    'data': [
+        'views/pos_customer.xml',
+    ],
+    'installable': True,
+    'application': True,
     'js': [
+        '../web/static/lib/bootstrap/js/bootstrap.js',
+        'static/src/lib/bootstrap-typeahead.js',
         'static/src/js/widget_keyboard.js',
         'static/src/js/widgets.js',
         'static/src/js/screens.js',
         'static/src/js/main.js'
     ],
     'css': [
-        'static/src/css/keyboard_ext.css',
-        'static/src/css/pos_customer.css'
+        'static/src/css/pos_ext.css',
+        'static/src/css/keyboard_ext.css'
     ],
-    'qweb': [
-        'static/src/xml/pos_customer.xml'
-    ],
-    'installable': True,
+    'qweb': ['static/src/xml/pos_extended.xml'],
     'auto_install': False,
 }
+
+# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
