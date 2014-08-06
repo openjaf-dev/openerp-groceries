@@ -11,6 +11,8 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.point_o
             this.pos = options.pos;
             this._super(parent,options);
             this.mode = options.mode || 'cashier';
+            var self = this;
+
         },
         set_user_mode: function(mode){
             this.mode = mode;
@@ -22,6 +24,12 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.point_o
         renderElement: function(){
             var self = this;
             this._super();
+
+            $('body').on('keyup',function(e){
+                if(e.which === 78){
+                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
+                }
+            });
 
             this.$el.click(function(parent){
                 /*self.new_customer_note_popup = new module.NotesPopupWidget(self.pos_widget, {});

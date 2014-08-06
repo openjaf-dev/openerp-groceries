@@ -2,22 +2,16 @@
 <openerp>
     <data>
 
-       <!-- <record id="view_pos_customer_tree" model="ir.ui.view">
+       <record id="view_pos_customer_tree" model="ir.ui.view">
             <field name="name">pos.customer.tree</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_account_form" />
+            <field name="inherit_id" ref="base.view_partner_tree" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='company_id']" position="replace">
-                </xpath>
-                <tree string="Point of Sale Customers">
-                    <field name="name"/>
-                    <field name="mobile"/>
-                    <field name="email"/>
-                    <field name="comment"/>
-                    &lt;!&ndash;<field name="pos_session"/>&ndash;&gt;
-                </tree>
+                <field name="email" position="after">
+                    <field name="last_note" />
+                </field>
             </field>
-        </record>-->
+        </record>
 
         <record id="pos_note_view_partner_form" model="ir.ui.view">
             <field name="name">pos.note.partner.form.inherit</field>

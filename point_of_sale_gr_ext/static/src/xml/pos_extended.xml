@@ -29,7 +29,7 @@
 
     <t t-name="NotesWidget">
         <span class="notes">
-            Notes
+            Add Customer
         </span>
     </t>
 
@@ -49,13 +49,13 @@
               <br/>
 			  <ol>
 			    <li class="form-row"><label>Name:</label>
-				  <input name="name" type="text" placeholder="Name" id="name" class="text-input required name" />
+				  <input name="name" type="text" placeholder="Name" id="name" class="text-input required name" autocomplete="off" />
 				</li>
 				<li class="form-row"><label>Email:</label>
 				  <input name="email" type="text" id="email" placeholder="Email" class="text-input required email" />
 				</li>
 				<li class="form-row"><label>Phone:</label>
-				  <input name="phone" type="text" id="phone" placeholder="Phone Number"  class="text-input required phone" />
+				  <input name="phone" type="text" id="phone" placeholder="Phone Number"  class="text-input required phone"/>
 				</li>
 				<li class="form-row"><label>Note:</label>
                     <textarea id="note"  class="text-input required"/>
