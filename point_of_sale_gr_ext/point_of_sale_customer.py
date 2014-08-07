@@ -38,21 +38,40 @@ class pos_customer(osv.osv):
     _inherit = 'res.partner'
     _order = 'id desc'
 
+    def _get_last_note(self, cr, uid, ids, fields, args, context=None):
+        res = {}
+        for obj in self.browse(cr, uid, ids, context):
+            res[obj.id] = False
+            if obj.notes:
+                res[obj.id] = obj.notes[-1].comment
+        return res
+
     def create_from_ui(self, cr, uid, customer, context=None):
+
         vals = {}
-        vals['name'] = customer['name']
-        vals['mobile'] = customer['phone']
-        vals['email'] = customer['email']
+        partner_id = None
+        customer_id = customer['id']
 
-        partner_id = self.create(cr, uid, vals, context)
+        if customer['name']:
+            vals['name'] = customer['name']
+        if customer['phone']:
+            vals['mobile'] = customer['phone']
+        if customer['email']:
+            vals['email'] = customer['email']
 
-        if customer['note']:
-            self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': partner_id}, context)
+        if not customer_id:
+            partner_id = self.create(cr, uid, vals, context)
 
-        return partner_id
+            if customer['note']:
+                self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': partner_id}, context)
+        else:
+            self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': customer_id}, context)
+
+        return partner_id or customer_id
 
     _columns = {
         'notes': fields.one2many('pos.note', 'pos_customer', 'Notes'),
+        'last_note': fields.function(_get_last_note, method=True, type='char', size='255', string='Last Note')
     }
 
 

@@ -62,8 +62,8 @@ msgstr "Número Teléfonico"
 #. openerp-web
 #: code:addons/point_of_sale_gr_ext/static/src/xml/pos_extended.xml:0
 #, python-format
-msgid "Note"
-msgstr "Nota"
+msgid "Add Customer"
+msgstr "Adicionar Cliente"
 
 #. module: point_of_sale_gr_ext
 #. openerp-web
