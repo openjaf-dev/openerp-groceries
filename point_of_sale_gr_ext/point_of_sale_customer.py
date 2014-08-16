@@ -63,21 +63,23 @@ class pos_customer(osv.osv):
             partner_id = self.create(cr, uid, vals, context)
 
             if customer['note']:
-                self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': partner_id}, context)
+                self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': partner_id},
+                                                 context)
         else:
-            self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': customer_id}, context)
+            self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': customer_id},
+                                            context)
 
         return partner_id or customer_id
 
     _columns = {
         'notes': fields.one2many('pos.note', 'pos_customer', 'Notes'),
-        'last_note': fields.function(_get_last_note, method=True, type='char', size='255', string='Last Note')
+        'last_note': fields.function(_get_last_note, method=True, type='char', size='255', string='Last Note'),
+        'name': fields.char(string='Name', size=128, required=True, select=True),
     }
-
 
 class pos_customer_comments(osv.osv):
     _name = 'pos.note'
-    _order = 'id desc'
+    _order = 'id asc'
 
     _columns = {
         'pos_customer': fields.many2one('res.partner', 'Customer Note', required=True, ondelete='cascade'),

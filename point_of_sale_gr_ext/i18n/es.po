@@ -80,26 +80,6 @@ msgid "done"
 msgstr "hecho"
 
 #. module: point_of_sale_gr_ext
-#: field:pos.customer,note:0
-msgid "Note about customer preferences"
-msgstr "Nota de Cliente"
-
-#. module: point_of_sale_gr_ext
-#: field:pos.customer,pos_session:0
-msgid "Point of Sale Session"
-msgstr "Punto de Venta"
-
-#. module: point_of_sale_gr_ext
-#: field:pos.customer,phone_number:0
-msgid "Phone Number"
-msgstr "Número Teléfonico"
-
-#. module: point_of_sale_gr_ext
-#: field:pos.customer,name:0
-msgid "Name"
-msgstr "Nombre"
-
-#. module: point_of_sale_gr_ext
 #: model:ir.actions.act_window,name:point_of_sale_gr_ext.pos_customers_action
 #: model:ir.ui.menu,name:point_of_sale_gr_ext.menu_point_of_sale_customers
 #: model:ir.ui.menu,name:point_of_sale_gr_ext.menu_pos_customers
@@ -107,10 +87,15 @@ msgstr "Nombre"
 msgid "Customers"
 msgstr "Clientes"
 
-#. module: base
+#. module: point_of_sale_gr_ext
 #: field:res.partner,name:0
 msgid "Name"
 msgstr "Nombre"
+
+#. module: point_of_sale_gr_ext
+#: field:res.partner,last_note:0
+msgid "Last Note"
+msgstr "Última Nota"
 
 #. module: point_of_sale_gr_ext
 #: field:pos.note,comment:0
