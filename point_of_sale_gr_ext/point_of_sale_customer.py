@@ -19,22 +19,14 @@
 #
 ##############################################################################
 
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from decimal import Decimal
-import logging
-import pdb
 import time
 
-import openerp
-from openerp import tools
 from openerp.osv import fields, osv
+from openerp.osv.orm import Model
 from openerp.tools.translate import _
 
-_logger = logging.getLogger(__name__)
 
-
-class pos_customer(osv.osv):
+class pos_customer(Model):
     _inherit = 'res.partner'
     _order = 'id desc'
 
@@ -47,51 +39,46 @@ class pos_customer(osv.osv):
         return res
 
     def create_from_ui(self, cr, uid, customer, context=None):
+        pn = self.pool.get('pos.note')
 
-        vals = {}
-        partner_id = None
-        customer_id = customer['id']
-
-        if customer['name']:
-            vals['name'] = customer['name']
-        if customer['phone']:
-            vals['mobile'] = customer['phone']
-        if customer['email']:
-            vals['email'] = customer['email']
-
+        customer_id = customer.get('id', False)
         if not customer_id:
-            partner_id = self.create(cr, uid, vals, context)
+            vals = {
+                'name': customer['name'],
+                'mobile': customer.get('phone', False),
+                'email': customer.get('email', False)
+            }
+            customer_id = self.create(cr, uid, vals, context)
 
-            if customer['note']:
-                self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': partner_id},
-                                                 context)
-        else:
-            self.pool.get('pos.note').create(cr, uid, {'comment': customer['note'], 'pos_customer': customer_id},
-                                            context)
+        if customer.get('note', False):
+            wals = {'comment': customer['note'], 'pos_customer': customer_id}
+            pn.create(cr, uid, wals, context)
 
-        return partner_id or customer_id
+        return customer_id
 
     _columns = {
         'notes': fields.one2many('pos.note', 'pos_customer', 'Notes'),
-        'last_note': fields.function(_get_last_note, method=True, type='char', size='255', string='Last Note'),
-        'name': fields.char(string='Name', size=128, required=True, select=True),
+        'last_note': fields.function(_get_last_note, method=True, type='char',
+                                     size='255', string='Last Note'),
+        'name': fields.char(string='Name', size=128, required=True,
+                            select=True),
     }
 
-class pos_customer_comments(osv.osv):
+
+class pos_customer_comments(Model):
     _name = 'pos.note'
     _order = 'id asc'
-
     _columns = {
-        'pos_customer': fields.many2one('res.partner', 'Customer Note', required=True, ondelete='cascade'),
+        'pos_customer': fields.many2one('res.partner', 'Customer Note',
+                                        required=True, ondelete='cascade'),
         'comment': fields.text('Notes'),
     }
 
 
-class pos_order_gr_ext(osv.osv):
+class pos_order_gr_ext(Model):
     _inherit = 'pos.order'
 
     def create_from_ui(self, cr, uid, orders, context=None):
-        #_logger.info("orders: %r", orders)
         order_ids = []
         order_id = None
 
@@ -105,7 +92,7 @@ class pos_order_gr_ext(osv.osv):
                     'user_id': order['user_id'] or False,
                     'session_id': order['pos_session_id'],
                     'lines': order['lines'],
-                    'pos_reference':order['name'],
+                    'pos_reference': order['name'],
                     'partner_id': order['partner_id'] or False
                 }, context)
             for payments in order['statement_ids']:
@@ -121,7 +108,6 @@ class pos_order_gr_ext(osv.osv):
             if order['amount_return']:
                 session = self.pool.get('pos.session').browse(cr, uid, order['pos_session_id'], context=context)
                 cash_journal = session.cash_journal_id
-                cash_statement = False
                 if not cash_journal:
                     cash_journal_ids = filter(lambda st: st.journal_id.type=='cash', session.statement_ids)
                     if not len(cash_journal_ids):
@@ -143,6 +129,3 @@ class pos_order_gr_ext(osv.osv):
                 self.pool['account.invoice'].signal_invoice_open(cr, uid, [order_obj.invoice_id.id])
 
         return order_ids
-
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

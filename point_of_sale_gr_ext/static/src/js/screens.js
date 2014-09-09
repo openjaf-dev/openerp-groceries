@@ -120,9 +120,9 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
                    self.validate_form_popup(e);
                 }else if (e.which === 27){
                     self.pos_widget.screen_selector.close_popup();
-                }else if(e.which === 78){
-                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
-                }
+                }//else if(e.which === 78){
+                 //   self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
+                //}
             });
 
             this.$('#name').on('keypress',function(e){
@@ -140,24 +140,24 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             var map = {};
 
             this.$('#name').typeahead({
-                source:/*colors*/function(query, process){
+                source: function(query, process){
                   var names = [];
-                  var partners = self.load_data('res.partner', ['id','name','email','mobile'],
-                      [['customer','=',true],['company_id','=',self.pos_widget.pos.company.id]])
+                  var partners = self.load_data('res.partner', ['id','name','mobile','email'], [['customer','=',true], ['company_id', '=', self.pos_widget.pos.company.id]])
                         .then(function(partners){
-                          $.each(partners,function(i, partner){
-                             map[partner.name+'_'+partner.id] = partner;
-                             names.push(partner.name+'_'+partner.id);
+                          $.each(partners, function(i, partner){                             
+							 map[partner.name ] = partner;
+							 names.push(partner.name);
                           });
                           process(names);
                       });
                 },
                 updater: function (item) {
-                    self.partner_id = this.$menu.find('.active').attr('id');
-                    var mobile = map[item+'_'+self.partner_id].mobile;
-                    var email = map[item+'_'+self.partner_id].email;
+					partner = map[item];
+                    self.partner_id = partner.id;
+                    var mobile = partner.mobile;
+                    var email = partner.email;
                     if (mobile != '' || mobile != false){
-                        self.$('#phone')[0].value= mobile;
+                        self.$('#phone')[0].value = mobile;
                     }
                     if (email != '' || email != false){
                         self.$('#email')[0].value = email;
@@ -182,9 +182,7 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
 		    $('span.error').remove();
         },
         conf_button_ok: function(){
-
             var self = this;
-
             $('#pop_ok_button').off('click').click(function(e){
                 self.validate_form_popup(e);
             });
@@ -200,22 +198,13 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             this.pos_widget.onscreen_keyboard.connect(this);
         },
         close: function(){
-             /*var self = this;
-            $('body').off('keyup').on('keyup',function(e){
-                if(e.which === 78){
-                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
-                }
-            });*/
         },
         save_pop_note_data: function(option){
             var self = this;
-
             var name = $(this.el.querySelector('#name'))[0];
             var phone = $(this.el.querySelector('#phone'))[0];
             var note = $(this.el.querySelector('#note'))[0];
             var email = $(this.el.querySelector('#email'))[0];
-
-            /*this.session_id = this.pos_widget.pos.pos_session.id*/
 
             data = {
                 'name':name.value,
@@ -223,19 +212,13 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
                 'email':email.value,
                 'note': note.value,
                 'id':this.partner_id
-                /*,
-                'pos_session_id':this.session_id*/
             }
-
-             var partner = new instance.web.Model('res.partner')
-
-             partner.call('create_from_ui',[data]).then(function(result){
-                  /*alert(result);*/
-                 var client = {'id':result,'name':name.value}
-                 self.pos.get('selectedOrder').set_client(client);
-              });
-
-            self.pos_widget.screen_selector.show_popup('success_action_popup');
+            var partner = new instance.web.Model('res.partner')
+            partner.call('create_from_ui',[data]).then(function(result){
+                var client = {'id':result,'name':name.value}
+                self.pos.get('selectedOrder').set_client(client);
+				self.pos_widget.screen_selector.show_popup('success_action_popup');
+            });
         },
     });
 
@@ -271,12 +254,6 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             });
         },
         close: function(){
-            /*var self = this;
-            $('body').off('keyup').on('keyup',function(e){
-                if(e.which === 78){
-                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
-                }
-            });*/
         },
     });
 }
