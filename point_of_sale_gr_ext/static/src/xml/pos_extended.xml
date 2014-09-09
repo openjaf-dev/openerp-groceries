@@ -8,12 +8,6 @@
         <t t-jquery=".placeholder-UsernameWidget" t-operation="before">
             <span class="placeholder-NotesWidget"></span>
         </t>
-
-        <!--<t t-jquery=".placeholder-OnscreenKeyboardWidget" t-operation="before">
-            &lt;!&ndash;<div class="placeholder-OnscreenKeyboardWidget1"></div>&ndash;&gt;
-            &lt;!&ndash;<div class="placeholder-OnscreenKeyboardWidget2"></div>
-            <div class="placeholder-OnscreenKeyboardWidget3"></div>&ndash;&gt;
-        </t>-->
     </t>
 
     <t t-extend="OnscreenKeyboardFull">
@@ -33,12 +27,6 @@
             Add Customer
         </span>
     </t>
-
-    <!--<t t-name="NotesInputFieldWidget">
-        <span class="notes">
-            <t t-esc="widget.get_name()" />
-        </span>
-    </t>-->
 
     <t t-name="NotesPopupWidget">
         <div class="wrap">
@@ -60,36 +48,16 @@
 				</li>
 				<li class="form-row"><label>Note:</label>
                     <textarea id="note"  class="text-input required"/>
-				 <!--<input name="note" type="text" id="note" class="text-input required" />-->
 				</li>
-				<!--<li class="button-row">
-                    <div class="modal-footer">
-                        <a href="#" class="btn">Close</a>
-                        <a href="#" class="btn btn-primary">Ok</a>
-                    </div>
-				</li>-->
 			  </ol>
                 <div class="modal-footer">
-                    <a href="#" id="pop_cancel_button" class="btn">Close</a>
-                    <a href="#" id="pop_ok_button" class="btn btn-primary">Ok</a>
+                    <a href="#" id="pop_cancel_button" class="btn">Cancel</a>
+                    <a href="#" id="pop_ok_button" class="btn btn-primary">Accept</a>
                 </div>
 			</fieldset>
 		  </form>
 	    </div>
     </t>
-
-    <!--<t t-name="FailureActionPopUpWidget">
-        <div class="modal-dialog">
-            <div class="popup popup-help">
-                <p class="message">You should refill all fields of this window.</p>
-                <div class="footer">
-                    <div class="button">
-                        Ok
-                    </div>
-                </div>
-            </div>
-        </div>
-    </t>-->
 
     <t t-name="SuccessActionPopUpWidget">
         <div class="wrap">
@@ -101,7 +69,7 @@
               <br/>
 			  <ol>
 			    <li class="form-row">
-				  <p class="message">Congratulations! You have added a new customer note to this point of sale.</p>
+				  <p class="message">Succes! You have updated the customers.</p>
 				</li>
               </ol>
               <div class="modal-footer">
@@ -110,6 +78,33 @@
 			</fieldset>
 		  </form>
 	    </div>
+    </t>
+	
+	<t t-name="Paymentline">
+        <div t-attf-class="paymentline #{line.selected ? 'selected' : ''}">
+            <div class='paymentline-name'>
+                <t t-esc="line.name"/>
+            </div>
+            <select class='paymentline-input' >
+            	<option t-attr-value="credit">Credit</option>
+				<option t-attr-value="debit">Debit</option>
+			</select>
+			<span class="oe_radio_input" t-attr-style="margin-top: 10px;">
+				<input t-att-name="card-type" t-att-value="visa" type="radio">
+					<img src="/point_of_sale_gr_ext/static/src/img/visa.png" />
+				</input>
+				<input t-att-name="card-type" t-att-value="mastercard" type="radio">
+					<img src="/point_of_sale_gr_ext/static/src/img/master.png" />
+				</input>
+				<input t-att-name="card-type" t-att-value="discover" type="radio" >
+					<img src="/point_of_sale_gr_ext/static/src/img/discover.png" />
+				</input>
+			</span>
+			<input class='paymentline-input' type="number" step="0.01" t-att-value="line.get_amount().toFixed(2)" />
+            <span  class='paymentline-delete'>
+                <img src="/point_of_sale/static/src/img/search_reset.gif" />
+            </span>
+        </div>
     </t>
 
 </templates>
