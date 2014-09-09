@@ -99,6 +99,9 @@
 				<input t-att-name="card-type" t-att-value="discover" type="radio" >
 					<img src="/point_of_sale_gr_ext/static/src/img/discover.png" style="margin-top: 10px; margin-right: 5px;"/>
 				</input>
+				<input t-att-name="card-type" t-att-value="american" type="radio" >
+					<img src="/point_of_sale_gr_ext/static/src/img/american_express.png" style="margin-top: 10px; margin-right: 5px;"/>
+				</input>
 			</span>
 			<input class='paymentline-input' type="number" step="0.01" t-att-value="line.get_amount().toFixed(2)" />
             <span  class='paymentline-delete'>
