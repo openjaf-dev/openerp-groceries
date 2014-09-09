@@ -85,19 +85,19 @@
             <div class='paymentline-name'>
                 <t t-esc="line.name"/>
             </div>
-            <select class='paymentline-input' >
+            <select class='paymentline-input' t-if="line.cashregister.journal.type !== 'cash'" >
             	<option t-attr-value="credit">Credit</option>
 				<option t-attr-value="debit">Debit</option>
 			</select>
-			<span class="oe_radio_input" t-attr-style="margin-top: 10px;">
+			<span class="oe_radio_input" t-if="line.cashregister.journal.type !== 'cash'" >
 				<input t-att-name="card-type" t-att-value="visa" type="radio">
-					<img src="/point_of_sale_gr_ext/static/src/img/visa.png" />
+					<img src="/point_of_sale_gr_ext/static/src/img/visa.png" style="margin-top: 10px; margin-right: 5px;" />
 				</input>
 				<input t-att-name="card-type" t-att-value="mastercard" type="radio">
-					<img src="/point_of_sale_gr_ext/static/src/img/master.png" />
+					<img src="/point_of_sale_gr_ext/static/src/img/master.png" style="margin-top: 10px; margin-right: 5px;"/>
 				</input>
 				<input t-att-name="card-type" t-att-value="discover" type="radio" >
-					<img src="/point_of_sale_gr_ext/static/src/img/discover.png" />
+					<img src="/point_of_sale_gr_ext/static/src/img/discover.png" style="margin-top: 10px; margin-right: 5px;"/>
 				</input>
 			</span>
 			<input class='paymentline-input' type="number" step="0.01" t-att-value="line.get_amount().toFixed(2)" />
