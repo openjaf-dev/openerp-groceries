@@ -85,10 +85,10 @@
             <div class='paymentline-name'>
                 <t t-esc="line.name"/>
             </div>
-            <select class='paymentline-input' t-if="line.cashregister.journal.type !== 'cash'" >
-            	<option t-attr-value="credit">Credit</option>
-				<option t-attr-value="debit">Debit</option>
-			</select>
+			<div t-if="line.cashregister.journal.type !== 'cash'">
+				<button name='credit' class="paypad-button" style="width: 170px; height: 30px;">Credit</button>
+				<button name='debit'  class="paypad-button" style="width: 170px; height: 30px;">Debit</button>
+			</div>
 			<span class="oe_radio_input" t-if="line.cashregister.journal.type !== 'cash'" >
 				<input t-att-name="card-type" t-att-value="visa" type="radio">
 					<img src="/point_of_sale_gr_ext/static/src/img/visa.png" style="margin-top: 10px; margin-right: 5px;" />
