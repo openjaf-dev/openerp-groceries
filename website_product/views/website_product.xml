@@ -3,7 +3,7 @@
 <data>
 <!-- Page -->
 
-<template id="products_crud" name="Your Products">
+<template id="product_index" name="Products">
     <t t-call="website.layout">
         <section class="container">
             <div class="col-sm-12 text-center" t-if="len(product_ids)">
@@ -14,14 +14,51 @@
                 <div class="clearfix"/>
                 <img t-att-src="product.img('image_medium')" class="img shadow img-rounded"/>
                 <div class="mt8">
-                    <strong t-field="product.name"></strong>
+                    <a t-attf-href="/product/#{ slug(product.product_tmpl_id)}">
+                        <strong t-field="product.name"></strong>
+                    </a>
                 </div>
+                  <div>
+                      <a t-attf-href="/product/#{ slug(product.product_tmpl_id)}/edit">
+                          <strong>Edit</strong>
+                      </a>
+                  </div>
+
                 <!-- <div t-field="product.job_id"/> -->
                 <!-- <div t-field="product.public_info" class="text-muted mt16"/> -->
             </div>
         </section>
     </t>
 </template>
+
+
+<template id="product_show" name="Product">
+  <t t-call="website.layout">
+      <t t-set="additional_title" t-value="product.name"/>
+      <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
+        <section class="container oe_website_sale" id="product_detail">
+          <div class="row">
+            <div class="col-sm-4">
+                <ol class="breadcrumb">
+                    <li><a t-attf-href="/shop?{{ keep_query('search', 'filters', 'page') if not category else keep_query('search', 'filters') }}">Products</a></li>
+                    <li t-if="category"><a t-attf-href="/shop/category/{{ slug(category) }}?{{ keep_query('search', 'filters', 'page') }}" t-field="category.name"/></li>
+                    <li class="active"><span t-field="product.name"/></li>
+                </ol>
+            </div>
+            <div class="col-sm-5 col-md-5 col-lg-5">
+                <span itemprop="image" t-field="product.image" t-field-options='{"widget": "image", "class": "product_detail_img"}'/>
+            </div><div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
+                <h1 itemprop="name" t-field="product.name">Product Name</h1>
+                <span itemprop="url" style="display:none;" t-esc="'/shop/product/%s' % slug(product)"/>
+            </div>
+          </div>
+        </section>
+        <div itemprop="description" t-field="product.website_description" class="oe_structure mt16" id="product_full_description"/>
+      </div>
+  </t>
+</template>
+
+
 
  </data>
 </openerp>

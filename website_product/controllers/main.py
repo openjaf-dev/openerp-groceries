@@ -14,5 +14,17 @@ class website_product(http.Controller):
             'product_ids': product_obj.browse(request.cr, request.uid, product_ids,
                                           request.context)
         }
-        return request.website.render("website_product.products_crud", values)
+        return request.website.render("website_product.product_index", values)
+    
+    @http.route(['/product/<model("product.template"):product>'], type='http', auth="public", website=True, multilang=True)
+    def product(self, product, search='', category='', filters='', **kwargs):
+        if category:
+            category_obj = request.registry.get('product.public.category')
+            category = category_obj.browse(request.cr, request.uid, int(category), context=request.context)
 
+        values = {
+            'main_object': product,
+            'product': product,
+            'category': category,
+        }
+        return request.website.render("website_product.product_show", values)
