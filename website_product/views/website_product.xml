@@ -18,11 +18,6 @@
                         <strong t-field="product.name"></strong>
                     </a>
                 </div>
-                  <div>
-                      <a t-attf-href="/product/#{ slug(product.product_tmpl_id)}/edit">
-                          <strong>Edit</strong>
-                      </a>
-                  </div>
 
                 <!-- <div t-field="product.job_id"/> -->
                 <!-- <div t-field="product.public_info" class="text-muted mt16"/> -->
