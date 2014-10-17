@@ -38,7 +38,7 @@ class website_product(http.Controller):
             'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
                                           request.context)
         }
-        return request.website.render("website_product.partner_index", values)
+        return request.website.render("website_partner.partner_index", values)
 
     @http.route(['/pos/session'], type='http', auth="public", website=True, multilang=True)
     def pos_sessionnn(self, **post):
@@ -49,5 +49,5 @@ class website_product(http.Controller):
         #     'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
         #                                   request.context)
         }
-        return request.website.render("website_product.pos_session", values)
+        return request.website.render("website_pos.pos_session", values)
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<!-- Page -->
+
+
+<template id="pos_session" name="Point of Sale">
+    <t t-call="website.layout">
+        <section class="container">
+            <div class="col-sm-12 text-center">
+                <h2>Your Sessions</h2>
+            </div>
+
+        </section>
+        <div>
+            <a hrf="/pos/session_start" class="btn btn-primary btn-lg mt8 a-submit"> Start Session </a>
+        </div>
+    </t>
+</template>
+
+
+
+
+ </data>
+</openerp>

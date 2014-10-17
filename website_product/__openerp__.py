@@ -13,6 +13,8 @@ Our Products
     'data': [
         'data/website_product_data.xml',
         'views/website_product.xml',
+        'views/website_pos.xml',
+        'views/website_partner.xml',
         'security/ir.model.access.csv',
         'security/website_product.xml',
     ],
