@@ -9,6 +9,20 @@
             <field name="sequence" type="int">40</field>
         </record>
 
+        <record id="menu_pos" model="website.menu">
+            <field name="name">POS Session</field>
+            <field name="url">/pos/session</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">50</field>
+        </record>
+
+        <record id="menu_users" model="website.menu">
+            <field name="name">Users</field>
+            <field name="url">/users</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">51</field>
+        </record>
+
        <!--  <record id="action_open_website" model="ir.actions.act_url">
             <field name="name">Website About</field>
             <field name="target">self</field>

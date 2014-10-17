@@ -16,6 +16,9 @@ Our Products
         'security/ir.model.access.csv',
         'security/website_product.xml',
     ],
+    'js': [
+        'static/src/js/widgets.js'
+    ],
     'qweb': ['static/src/xml/*.xml'],
     'installable': True,
 }

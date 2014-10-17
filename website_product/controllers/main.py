@@ -6,7 +6,7 @@ from openerp.addons.web.http import request
 class website_product(http.Controller):
 
     @http.route(['/products'], type='http', auth="public", website=True, multilang=True)
-    def blog(self, **post):
+    def productsss(self, **post):
         product_obj = request.registry['product.product']
         product_ids = product_obj.search(request.cr, request.uid, [],
                                      context=request.context)
@@ -15,7 +15,7 @@ class website_product(http.Controller):
                                           request.context)
         }
         return request.website.render("website_product.product_index", values)
-    
+
     @http.route(['/product/<model("product.template"):product>'], type='http', auth="public", website=True, multilang=True)
     def product(self, product, search='', category='', filters='', **kwargs):
         if category:
@@ -28,3 +28,26 @@ class website_product(http.Controller):
             'category': category,
         }
         return request.website.render("website_product.product_show", values)
+
+    @http.route(['/users'], type='http', auth="public", website=True, multilang=True)
+    def usersss(self, **post):
+        respartner_obj = request.registry['res.partner']
+        respartner_ids = respartner_obj.search(request.cr, request.uid, [],
+                                     context=request.context)
+        values = {
+            'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
+                                          request.context)
+        }
+        return request.website.render("website_product.partner_index", values)
+
+    @http.route(['/pos/session'], type='http', auth="public", website=True, multilang=True)
+    def pos_sessionnn(self, **post):
+        # respartner_obj = request.registry['res.partner']
+        # respartner_ids = respartner_obj.search(request.cr, request.uid, [],
+        #                              context=request.context)
+        values = {
+        #     'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
+        #                                   request.context)
+        }
+        return request.website.render("website_product.pos_session", values)
+

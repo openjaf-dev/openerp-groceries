@@ -35,7 +35,7 @@
           <div class="row">
             <div class="col-sm-4">
                 <ol class="breadcrumb">
-                    <li><a t-attf-href="/shop?{{ keep_query('search', 'filters', 'page') if not category else keep_query('search', 'filters') }}">Products</a></li>
+                    <li><a t-attf-href="/products">Products</a></li>
                     <li t-if="category"><a t-attf-href="/shop/category/{{ slug(category) }}?{{ keep_query('search', 'filters', 'page') }}" t-field="category.name"/></li>
                     <li class="active"><span t-field="product.name"/></li>
                 </ol>
@@ -52,6 +52,46 @@
       </div>
   </t>
 </template>
+
+
+<template id="partner_index" name="Partners">
+    <t t-call="website.layout">
+        <section class="container">
+            <div class="col-sm-12 text-center" t-if="len(respartner_ids)">
+                <h2>Your Partners</h2>
+            </div>
+            <div t-foreach="respartner_ids" t-as="respartner" class="col-sm-3 col-lg-2 mt16 text-center colsize">
+                <!-- <t t-call="website.publish_management"><t t-set="object" t-value="product"/></t> -->
+                <div class="clearfix"/>
+                <img t-att-src="respartner.image" class="img shadow img-rounded"/>
+                <div class="mt8">
+                    <!-- <a t-attf-href="/product/#{ slug(product.product_tmpl_id)}"> -->
+                        <strong t-field="respartner.name"></strong>
+                    <!-- </a> -->
+                </div>
+
+                <!-- <div t-field="product.job_id"/> -->
+                <!-- <div t-field="product.public_info" class="text-muted mt16"/> -->
+            </div>
+        </section>
+    </t>
+</template>
+
+
+<template id="pos_session" name="Point of Sale">
+    <t t-call="website.layout">
+        <section class="container">
+            <div class="col-sm-12 text-center">
+                <h2>Your Sessions</h2>
+            </div>
+
+        </section>
+        <div>
+            <a hrf="/pos/session_start" class="btn btn-primary btn-lg mt8 a-submit"> Start Session </a>
+        </div>
+    </t>
+</template>
+
 
 
 

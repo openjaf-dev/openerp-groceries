@@ -55,6 +55,30 @@ function openerp_pos_widgets_ext(instance, module){ //module is instance.point_o
 
         // This method instantiates all the screens, widgets, etc. If you want to add new screens change the
         // startup screen, etc, override this method.
+        
+        close: function() {
+            var self = this;
+
+            function close(){
+                // return new instance.web.Model("ir.model.data").get_func("search_read")([['name', '=', 'action_client_pos_menu']], ['res_id']).pipe(function(res) {
+                //     window.location = '/web#action=' + res[0]['res_id'];
+                // });
+                window.location = '/pos/session'
+            }
+
+            var draft_order = _.find( self.pos.get('orders').models, function(order){
+                return order.get('orderLines').length !== 0 && order.get('paymentLines').length === 0;
+            });
+            if(draft_order){
+                if (confirm(_t("Pending orders will be lost.\nAre you sure you want to leave this session?"))) {
+                    return close();
+                }
+            }else{
+                return close();
+            }
+        },
+        
+        
         build_widgets: function() {
             var self = this;
 
