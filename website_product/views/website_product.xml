@@ -8,6 +8,7 @@
         <section class="container">
             <div class="col-sm-12 text-center" t-if="len(product_ids)">
                 <h2>Your Product</h2>
+                <a href="/add_product" class="btn btn-primary btn-lg mt8 a-submit"> New Product </a>
             </div>
             <div t-foreach="product_ids" t-as="product" class="col-sm-3 col-lg-2 mt16 text-center colsize">
                 <!-- <t t-call="website.publish_management"><t t-set="object" t-value="product"/></t> -->
@@ -53,46 +54,30 @@
   </t>
 </template>
 
-
-<template id="partner_index" name="Partners">
-    <t t-call="website.layout">
-        <section class="container">
-            <div class="col-sm-12 text-center" t-if="len(respartner_ids)">
-                <h2>Your Partners</h2>
-            </div>
-            <div t-foreach="respartner_ids" t-as="respartner" class="col-sm-3 col-lg-2 mt16 text-center colsize">
-                <!-- <t t-call="website.publish_management"><t t-set="object" t-value="product"/></t> -->
-                <div class="clearfix"/>
-                <img t-att-src="respartner.image" class="img shadow img-rounded"/>
-                <div class="mt8">
-                    <!-- <a t-attf-href="/product/#{ slug(product.product_tmpl_id)}"> -->
-                        <strong t-field="respartner.name"></strong>
-                    <!-- </a> -->
-                </div>
-
-                <!-- <div t-field="product.job_id"/> -->
-                <!-- <div t-field="product.public_info" class="text-muted mt16"/> -->
-            </div>
-        </section>
-    </t>
-</template>
-
-
-<template id="pos_session" name="Point of Sale">
+<template id="product_new" name="Products">
     <t t-call="website.layout">
         <section class="container">
             <div class="col-sm-12 text-center">
-                <h2>Your Sessions</h2>
+                <h2>New Product</h2>
             </div>
+	        <form action="/create" method="post" style="display: inline-block;">				
+	            <div class="form-group field-name">
+	                <label for="name" class="control-label">Product Name</label>
+	                <input type="text" name="name" t-att-value="Pepito" id="name" class="form-control" autofocus="autofocus" required="required" t-att-readonly="'readonly' if only_passwords else None"/>
+	            </div>
+	
+	            <div class="form-group field-name">
+	                <label for="name" class="control-label">Price</label>
+	                <input type="text" name="price" t-att-value="price" id="price" class="form-control" placeholder="1.0"
+	                    required="required" t-att-readonly="'readonly' if only_passwords else None"/>
+	            </div>
+            	<button type="submit" class="btn btn-primary mt8 a-submit">Save</button>
+                
+            </form>
 
         </section>
-        <div>
-            <a hrf="/pos/session_start" class="btn btn-primary btn-lg mt8 a-submit"> Start Session </a>
-        </div>
     </t>
 </template>
-
-
 
 
  </data>
