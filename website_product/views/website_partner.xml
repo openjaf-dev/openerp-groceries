@@ -8,7 +8,9 @@
     <t t-call="website.layout">
         <section class="container">
             <div class="col-sm-12 text-center" t-if="len(respartner_ids)">
-                <h2>Your Partners</h2>
+                <h2>Users</h2>
+                <a  t-attf-href="/web/signup?redirect=/web%3f{{ quote_plus(keep_query()) }}" class="btn btn-primary" groups="base.group_erp_manager">Sign up</a>
+                
             </div>
             <div t-foreach="respartner_ids" t-as="respartner" class="col-sm-3 col-lg-2 mt16 text-center colsize">
                 <!-- <t t-call="website.publish_management"><t t-set="object" t-value="product"/></t> -->
@@ -24,6 +26,30 @@
                 <!-- <div t-field="product.public_info" class="text-muted mt16"/> -->
             </div>
         </section>
+    </t>
+</template>
+
+<template id="auth_signup.login" inherit_id="web.login" name="Sign up - Reset Password">
+    <xpath expr="//button[@type='submit']" position="before">
+    </xpath>
+</template>
+
+<template id="auth_signup.signup" name="Sign up login">
+    <t t-call="web.login_layout">
+        <form class="oe_signup_form" role="form" t-attf-action="/web/signup{{ '?debug' if debug else '' }}" method="post" t-if="not message">
+
+            <t t-call="auth_signup.fields"/>
+
+            <p class="alert alert-danger" t-if="error">
+                <t t-esc="error"/>
+            </p>
+            <input type="hidden" name="redirect" t-att-value="redirect"/>
+            <input type="hidden" name="token" t-att-value="token"/>
+            <div class="clearfix oe_login_buttons">
+                <button type="submit" class="btn btn-primary pull-left">Sign up</button>
+            </div>
+
+        </form>
     </t>
 </template>
 

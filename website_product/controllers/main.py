@@ -3,7 +3,10 @@
 from openerp.addons.web import http
 from openerp.addons.web.http import request
 
+
 class website_product(http.Controller):
+
+# Product CRUD
 
     @http.route(['/products'], type='http', auth="public", website=True, multilang=True)
     def products(self, **post):
@@ -29,19 +32,35 @@ class website_product(http.Controller):
         }
         return request.website.render("website_product.product_show", values)
 
+    @http.route(['/create'], type='http', auth="public", website=True, multilang=True)
+    def create_a_product(self, **post):
+        product = request.registry.get('product.product')
+        product.create(request.cr, request.uid, {'name':request.params['name'], 
+                                                 'lst_price':float(request.params['price'])})
+        return request.redirect("/products")
+
+    @http.route(['/add_product'], type='http', auth="public", website=True, multilang=True)
+    def add_product(self, **post):
+        values = {
+        }
+        return request.website.render("website_product.product_new", values)
+                
+            
+# Users CRUD
+
     @http.route(['/users'], type='http', auth="public", website=True, multilang=True)
     def users(self, **post):
-        respartner_obj = request.registry['res.partner']
+        respartner_obj = request.registry['res.users']
         respartner_ids = respartner_obj.search(request.cr, request.uid, [],
                                      context=request.context)
         values = {
             'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
                                           request.context)
         }
-        return request.website.render("website_partner.partner_index", values)
+        return request.website.render("website_product.partner_index", values)
 
     @http.route(['/pos/session'], type='http', auth="public", website=True, multilang=True)
-    def pos_sessionnn(self, **post):
+    def pos_session(self, **post):
     
         values = { }
 
@@ -53,23 +72,9 @@ class website_product(http.Controller):
                 pso_id = pos_session_opening_obj.create(request.cr, request.uid, {}, request.context)
                 pos_session_opening_obj.open_session_cb(request.cr, request.uid, [pso_id], request.context)
         
-        return request.website.render("website_pos.pos_session", values)
+        return request.website.render("website_product.pos_session", values)
         
-        
-    @http.route(['/add_product'], type='http', auth="public", website=True, multilang=True)
-    def add_product(self, **post):
-        values = {
-        }
-        return request.website.render("website_product.product_new", values)
-        
-        
-    @http.route(['/create'], type='http', auth="public", website=True, multilang=True)
-    def create_a_product(self, **post):
-        product = request.registry.get('product.product')
-        product.create(request.cr, request.uid, {'name':request.params['name'], 
-                                                 'lst_price':float(request.params['price'])})
-                
-        return request.redirect("/products")
-            
+    
+    
         
         
