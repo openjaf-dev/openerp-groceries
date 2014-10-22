@@ -140,24 +140,24 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             var map = {};
 
             this.$('#name').typeahead({
-                source:/*colors*/function(query, process){
+                source: function(query, process){
                   var names = [];
-                  var partners = self.load_data('res.partner', ['id','name','email','mobile'],
-                      [['customer','=',true],['company_id','=',self.pos_widget.pos.company.id]])
+                  var partners = self.load_data('res.partner', ['id','name','mobile','email'], [['customer','=',true], ['company_id', '=', self.pos_widget.pos.company.id]])
                         .then(function(partners){
-                          $.each(partners,function(i, partner){
-                             map[partner.name+'_'+partner.id] = partner;
-                             names.push(partner.name+'_'+partner.id);
+                          $.each(partners, function(i, partner){
+							 map[partner.name ] = partner;
+							 names.push(partner.name);
                           });
                           process(names);
                       });
                 },
                 updater: function (item) {
-                    self.partner_id = this.$menu.find('.active').attr('id');
-                    var mobile = map[item+'_'+self.partner_id].mobile;
-                    var email = map[item+'_'+self.partner_id].email;
+					partner = map[item];
+                    self.partner_id = partner.id;
+                    var mobile = partner.mobile;
+                    var email = partner.email;
                     if (mobile != '' || mobile != false){
-                        self.$('#phone')[0].value= mobile;
+                        self.$('#phone')[0].value = mobile;
                     }
                     if (email != '' || email != false){
                         self.$('#email')[0].value = email;
@@ -182,9 +182,7 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
 		    $('span.error').remove();
         },
         conf_button_ok: function(){
-
             var self = this;
-
             $('#pop_ok_button').off('click').click(function(e){
                 self.validate_form_popup(e);
             });
@@ -200,22 +198,13 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             this.pos_widget.onscreen_keyboard.connect(this);
         },
         close: function(){
-             /*var self = this;
-            $('body').off('keyup').on('keyup',function(e){
-                if(e.which === 78){
-                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
-                }
-            });*/
         },
         save_pop_note_data: function(option){
             var self = this;
-
             var name = $(this.el.querySelector('#name'))[0];
             var phone = $(this.el.querySelector('#phone'))[0];
             var note = $(this.el.querySelector('#note'))[0];
             var email = $(this.el.querySelector('#email'))[0];
-
-            /*this.session_id = this.pos_widget.pos.pos_session.id*/
 
             data = {
                 'name':name.value,
@@ -223,19 +212,13 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
                 'email':email.value,
                 'note': note.value,
                 'id':this.partner_id
-                /*,
-                'pos_session_id':this.session_id*/
             }
-
-             var partner = new instance.web.Model('res.partner')
-
-             partner.call('create_from_ui',[data]).then(function(result){
-                  /*alert(result);*/
-                 var client = {'id':result,'name':name.value}
-                 self.pos.get('selectedOrder').set_client(client);
-              });
-
-            self.pos_widget.screen_selector.show_popup('success_action_popup');
+            var partner = new instance.web.Model('res.partner')
+            partner.call('create_from_ui',[data]).then(function(result){
+                var client = {'id':result,'name':name.value}
+                self.pos.get('selectedOrder').set_client(client);
+				self.pos_widget.screen_selector.show_popup('success_action_popup');
+            });
         },
     });
 
@@ -271,12 +254,82 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             });
         },
         close: function(){
-            /*var self = this;
-            $('body').off('keyup').on('keyup',function(e){
-                if(e.which === 78){
-                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
+        },
+    });
+
+    module.PaymentScreenWidgetGr = instance.point_of_sale.PaymentScreenWidget.include({
+        level:1,
+        load_data: function(model, fields, domain){
+            return new instance.web.Model(model).query(fields).filter(domain).all();
+        },
+        get_card_image_url: function(card){
+            return window.location.origin + '/web/binary/image?model=pos.credit.cards.conf&field=image&id='+card;
+        },
+        render_cards: function(line){
+            var card_arr = new Array();
+            var cards_json = line.cashregister.journal.credit_cards_json_str.split(',');
+            if(cards_json.length != 0){
+                for(var i = 0; i < cards_json.length; i++){
+                    if (cards_json[i] != ''){
+                        var card = cards_json[i].split(':');
+                        card_arr[(card[1]+'_'+this.level).replace(/ /i,'')] = this.get_card_image_url(card[0]);
+                    }
                 }
-            });*/
+            }
+            this.level++;
+            return card_arr;
+        },
+        render_paymentline: function(line){
+            var journal_type = line.cashregister.journal.type = line.cashregister.journal.type;
+            var el_html;
+            if (journal_type != 'cash'){
+                el_html  = openerp.qweb.render('Paymentline',{widget: this, line: line, cards: this.render_cards(line)});
+            }else{
+                el_html  = openerp.qweb.render('Paymentline',{widget: this, line: line});
+            }
+
+            el_html  = _.str.trim(el_html);
+
+            var el_node  = document.createElement('tbody');
+                el_node.innerHTML = el_html;
+                el_node = el_node.childNodes[0];
+                el_node.line = line;
+            var paymentline_delete;
+            if (journal_type != 'cash'){
+                paymentline_delete = el_node.querySelector('.paymentline-delete1');
+            }else{
+                paymentline_delete = el_node.querySelector('.paymentline-delete');
+            }
+
+            paymentline_delete.addEventListener('click', this.line_delete_handler);
+
+            el_node.addEventListener('click', this.line_click_handler);
+
+            var input = el_node.querySelector('input');
+            if (input !=null){
+                input.addEventListener('keyup', this.line_change_handler);
+            }
+
+            var radio_node_list = el_node.querySelectorAll('input[type=radio]');
+            for(var i = 0; i < radio_node_list.length; i++){
+                radio_node_list[i].addEventListener('click',this.radio_checked);
+            }
+
+            line.node = el_node;
+
+//            if (journal_type != 'cash'){
+//                $('.payment-info').hide();
+//            }else{
+//                $('.payment-info').show();
+//            }
+
+            return el_node;
+        },
+        radio_checked:function(){
+            var self = this;
+            $(':radio').not('[name*='+self.name+']').each(function(thais){
+                $(this).attr("checked",false);
+            });
         },
     });
 }

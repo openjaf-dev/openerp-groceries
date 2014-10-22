@@ -71,10 +71,8 @@ class PosExController(main.PosController):
         css_list =   manifest_list('css',db=request.db, debug=debug)
 
         js = "\n".join('<script type="text/javascript" src="%s"></script>' % i for i in js_list)
-        #css = "\n".join('<link rel="stylesheet" href="%s">' % i for i in css_list)
         r = html_template % {
             'js': js,
-         #   'css': css,
             'modules': simplejson.dumps(module_boot(request.db)),
             'init': """
                      var wc = new s.web.WebClient();

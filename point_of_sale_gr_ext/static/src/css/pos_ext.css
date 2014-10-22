@@ -9,7 +9,6 @@
 }
 
 .modal-header {
-
   border-bottom: 3px solid #E0DDDD;
 }
 
@@ -146,27 +145,6 @@ textarea.form-control {
     width: 100%;
 
 }
-
-/* Form Validation
-
-.styled span.error {
-    font: bold 11px Arial, sans-serif;
-    color:#fff;
-    text-shadow: 1px 1px 1px #000;
-    display: none;
-    background: url("../img/arrow_error.png") no-repeat 0 center;
-    height: 11px;
-    padding: 7px 15px 10px 20px;
-    line-height: 1em;
-    position: absolute;
-    top: 3px;
-    right: 0;
-    border-right: 1px solid #6c0202;
-}
-
-.styled input.error {
-background-position: 0 -64px;
-}*/
 
 
 ul, ol{list-style:none;}
@@ -327,7 +305,18 @@ a {
     width: 100%;
 }
 
-/*.navbar-default {
-    background-color: transparent;
-    display: none;
-}*/
+/*  ********* The card list  ********* */
+
+.paymentline-delete1 {
+    width: 32px;
+    height: 32px;
+    padding: 5px;
+    text-align: center;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    position: absolute;
+    top: 1px;
+    right: 10px;
+    cursor: pointer;
+}
+
