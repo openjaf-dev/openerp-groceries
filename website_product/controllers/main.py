@@ -59,6 +59,18 @@ class website_product(http.Controller):
         }
         return request.website.render("website_product.partner_index", values)
 
+    @http.route(['/user/<model("res.partner"):user>'], type='http', auth="public", website=True, multilang=True)
+    def user(self, user, search='', filters='', **kwargs):
+        if user:
+            user_obj = request.registry.get('res.partner')
+            user = user_obj.browse(request.cr, request.uid, int(user), context=request.context)
+
+        values = {
+#             'main_object': product,
+            'user': user
+        }
+        return request.website.render("website_product.user_show", values)
+
     @http.route(['/pos/session'], type='http', auth="public", website=True, multilang=True)
     def pos_session(self, **post):
     
