@@ -1,0 +1,135 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* df_account_parser
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1-1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-24 17:48+0000\n"
+"PO-Revision-Date: 2013-05-24 17:48+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: df_account_parser
+#: model:ir.ui.menu,name:df_account_parser.menu_example_base_root
+msgid "Account Parser"
+msgstr "Parser Contable"
+
+#. module: df_account_parser
+#: model:ir.ui.menu,name:df_account_parser.menu_configuration
+msgid "Configuration"
+msgstr "Configuración"
+
+#. module: df_account_parser
+#: model:ir.ui.menu,name:df_account_parser.menu_import_account_plane
+msgid "Account Plan Generate Process"
+msgstr "Proceso Generador del Plan de Cuentas"
+
+#. module: df_account_parser
+#: model:ir.ui.menu,name:df_account_parser.menu_account_level
+msgid "Account Level"
+msgstr "Nivel de las Cuentas"
+
+#. module: df_account_parser
+#: model:ir.ui.menu,name:df_account_parser.menu_wildcard_character
+msgid "Wildcard Character"
+msgstr "Carácteres Especiales"
+
+#. module: df_account_parser
+#: field:account.level,wildcard_character:0
+msgid "Wildcard Character"
+msgstr "Carácter Especial"
+
+#. module: df_account_parser
+#: help:account.level,wildcard_character:0
+msgid "Wildcard Character for the "
+"Account Level \n"
+"Legend (Reserved Words): \n"
+"-One Space: Defines one space as a "
+"wildcard character for each line "
+"of the file. \n"
+"-Two Spaces:  Defines two space as a "
+"wildcard character for each line "
+"of the file. \n"
+"-Three Spaces: Defines three space as a "
+"wildcard character for each line "
+"of the file. \n"
+"-Four Spaces: Defines four space as a "
+"wildcard character for each line "
+"of the file. \n"
+msgstr "Carácter Especial para los "
+"Niveles de las Cuentas \n"
+"Leyenda (Palabras Reservadas): \n"
+"- Un Espacio: Define un espacio como un "
+"carácter especial para cada una de las línea "
+"del archivo. \n"
+"- Dos Espacios: Define dos espacios como un "
+"carácter especial para cada una de las línea "
+"del archivo. \n"
+"- Tres Espacios: Define tres espacios como un "
+"carácter especial para cada una de las línea "
+"del archivo. \n"
+"- Cuatro Espacios: Define cuatro espacios como un "
+"carácter especial para cada una de las línea del archivo."
+
+#. module: df_account_parser
+#: field:account.level,level:0
+msgid "Level"
+msgstr "Nivel"
+
+#. module: df_account
+#: selection:account.level,level:0
+msgid "First"
+msgstr "Primero"
+
+#. module: df_account
+#: selection:account.level,level:0
+msgid "Seconds"
+msgstr "Segundo"
+
+#. module: df_account
+#: selection:account.level,level:0
+msgid "Three"
+msgstr "Tercero"
+
+#. module: df_account
+#: selection:account.level,level:0
+msgid "Fourth"
+msgstr "Cuarto"
+
+#. module: df_account_parser
+#: field:account.level,description:0
+msgid "Description"
+msgstr "Descripcción"
+
+#. module: df_account_parser
+#: code:df_account_parser/df_account_level.py:0
+msgid 'The wildcard character can not be a digit.'
+msgstr 'El carácter especial no puede ser un dígito.'
+
+#. module: df_account_parser
+#: code:df_account_parser/df_account_level.py:0
+msgid 'The wild card inserted is invalid!'
+msgstr '!El carácter especial insertado es invalido!'
+
+#. module: df_account_parser
+#: code:df_account_parser/df_account_level.py:0
+msgid 'The wildcard character can not be a space.'
+msgstr 'El carácter especial no puede ser un espacio.'
+
+#. module: df_account_parser
+#: code:df_account_parser/df_account_level.py:0
+msgid 'The wildcard character can not be different.'
+msgstr 'El carácter especial no puede ser diferente.'
+
+
+
+
+
+
+
