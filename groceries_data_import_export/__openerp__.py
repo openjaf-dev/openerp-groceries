@@ -21,12 +21,12 @@
 {
     "name": "Groceries Data Import/Export",
     "version": "1.0",
-    "author": "Groceries",
+    'author': 'Antonio Mauri Garcia',
     "category": 'Data Load',
     'complexity': "easy",
     "description": """""",
     'website': '',
-    'depends': ['base', 'web'],
+    'depends': ['base', 'web', 'point_of_sale_gr_ext'],
     'init_xml': [],
     'update_xml': ['view/groceries_import_wizard_view.xml', 'view/base_menu.xml'],
     'js': [
@@ -37,7 +37,7 @@
     'demo_xml': [],
     'active': False,
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
     'application': True,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
