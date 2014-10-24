@@ -8,6 +8,7 @@ class website_product(http.Controller):
 
 # Product CRUD
 
+    #TODO i have to do the delete product
     @http.route(['/products'], type='http', auth="public", website=True, multilang=True)
     def products(self, **post):
         product_obj = request.registry['product.product']
@@ -48,6 +49,8 @@ class website_product(http.Controller):
             
 # Users CRUD
 
+    #TODO i have to do the delete user....
+    #User image not ready....
     @http.route(['/users'], type='http', auth="public", website=True, multilang=True)
     def users(self, **post):
         respartner_obj = request.registry['res.users']
@@ -66,10 +69,11 @@ class website_product(http.Controller):
             user = user_obj.browse(request.cr, request.uid, int(user), context=request.context)
 
         values = {
-#             'main_object': product,
             'user': user
         }
         return request.website.render("website_product.user_show", values)
+
+# Session Start
 
     @http.route(['/pos/session'], type='http', auth="public", website=True, multilang=True)
     def pos_session(self, **post):

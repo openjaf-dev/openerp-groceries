@@ -43,6 +43,7 @@
                 <h1 itemprop="name" t-field="user.name">User Name</h1>               
             </div>
           </div>
+
         </section>
   </t>
 </template>
@@ -52,6 +53,17 @@
         <form class="oe_signup_form" role="form" t-attf-action="/web/signup{{ '?debug' if debug else '' }}" method="post" t-if="not message">
 
             <t t-call="auth_signup.fields"/>
+
+          Roles
+                <select name="db" id="db" class="form-control" required="required" t-att-autofocus="'autofocus'" >
+                    <option></option>      <option>1</option>      <option>2</option>
+          <!--          <t t-foreach="databases" t-as="db">
+                        <option t-att-selected="'selected' if db == current_db else None">
+                            <t t-esc="db"/>
+                        </option>
+                    </t>   -->
+                </select>         
+          
 
             <p class="alert alert-danger" t-if="error">
                 <t t-esc="error"/>
