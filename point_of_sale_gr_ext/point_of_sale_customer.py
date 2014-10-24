@@ -21,10 +21,16 @@
 
 import time
 
+try:
+    import cStringIO as StringIO
+except ImportError:
+    import StringIO
+from PIL import Image
+
+from openerp import tools
 from openerp.osv import fields, osv
 from openerp.osv.orm import Model
 from openerp.tools.translate import _
-
 
 class pos_customer(Model):
     _inherit = 'res.partner'
@@ -72,6 +78,67 @@ class pos_customer_comments(Model):
         'pos_customer': fields.many2one('res.partner', 'Customer Note',
                                         required=True, ondelete='cascade'),
         'comment': fields.text('Notes'),
+    }
+
+class pos_credit_cards_conf(Model):
+    _name = 'pos.credit.cards.conf'
+    _inherit = ['mail.thread']
+
+    def _get_image(self, cr, uid, ids, name, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = tools.image_get_resized_images(obj.image, avoid_resize_medium=True)
+        return result
+
+    def _set_image(self, cr, uid, id, name, value, args, context=None):
+        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+
+    _columns = {
+        'name': fields.char(string='Name', size=128, required=True, translate=True, select=True),
+        'image': fields.binary("Image",
+                           help="This field holds the image used as image for the product, limited to 1024x1024px."),
+        'image_medium': fields.function(_get_image, fnct_inv=_set_image,string="Medium-sized image", type="binary",
+                multi="_get_image", help="Medium-sized image of the product. It is automatically "
+                 "resized as a 128x128px image, with aspect ratio preserved, "
+                 "only when the image exceeds one of those sizes. Use this field in form views or some kanban views."),
+        'image_small': fields.function(_get_image, fnct_inv=_set_image,string="Small-sized image", type="binary",
+               multi="_get_image",help="Small-sized image of the product. It is automatically "
+               "resized as a 64x64px image, with aspect ratio preserved. "
+               "Use this field anywhere a small image is required."),
+        'ready_2_use': fields.boolean('To Use', help="Specify if the credit card can be used."),
+    }
+
+    def _check_image_size(self, cr, uid, ids, context=None):
+        obj_self = self.browse(cr, uid, ids[0], context=context)
+
+        image_stream = StringIO.StringIO(obj_self.image.decode('base64'))
+        image = Image.open(image_stream)
+        perm_size = (32, 32)
+        if not perm_size == image.size:
+            return False
+        else:
+            return True
+
+    _constraints = [
+        (_check_image_size, '\nThe card image must have a size of 32 x 32!', ['image']),
+    ]
+
+class account_journal(osv.osv):
+    _inherit = "account.journal"
+
+    def _get_credit_cards_json(self, cr, uid, ids, field_name, arg=None, context=None):
+        res = dict.fromkeys(ids, '')
+        for journal in self.browse(cr, uid, ids, context=context):
+            credit_cards = journal.credit_cards
+            if credit_cards:
+                for c_card in credit_cards:
+                    res[journal.id] = res[journal.id] + str(c_card.id) + ':' + c_card.name + ','
+        return res
+
+    _columns = {
+        'credit_cards': fields.many2many('pos.credit.cards.conf', 'pos_credit_cards_conf_journal_rel',
+        'journal_id','pos_credit_cards_conf_id', 'Available Credit Cards', domain="[('ready_2_use', '=', True )]"),
+        'credit_cards_json_str': fields.function(_get_credit_cards_json, string='Card Json Encoding', type='char', size=32),
     }
 
 

@@ -120,9 +120,9 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
                    self.validate_form_popup(e);
                 }else if (e.which === 27){
                     self.pos_widget.screen_selector.close_popup();
-                }//else if(e.which === 78){
-                 //   self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
-                //}
+                }else if(e.which === 78){
+                    self.pos_widget.screen_selector.show_popup('new_customer_note_popup');
+                }
             });
 
             this.$('#name').on('keypress',function(e){
@@ -144,7 +144,7 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
                   var names = [];
                   var partners = self.load_data('res.partner', ['id','name','mobile','email'], [['customer','=',true], ['company_id', '=', self.pos_widget.pos.company.id]])
                         .then(function(partners){
-                          $.each(partners, function(i, partner){                             
+                          $.each(partners, function(i, partner){
 							 map[partner.name ] = partner;
 							 names.push(partner.name);
                           });
@@ -254,6 +254,82 @@ function openerp_pos_screens_ext(instance, module){ //module is instance.point_o
             });
         },
         close: function(){
+        },
+    });
+
+    module.PaymentScreenWidgetGr = instance.point_of_sale.PaymentScreenWidget.include({
+        level:1,
+        load_data: function(model, fields, domain){
+            return new instance.web.Model(model).query(fields).filter(domain).all();
+        },
+        get_card_image_url: function(card){
+            return window.location.origin + '/web/binary/image?model=pos.credit.cards.conf&field=image&id='+card;
+        },
+        render_cards: function(line){
+            var card_arr = new Array();
+            var cards_json = line.cashregister.journal.credit_cards_json_str.split(',');
+            if(cards_json.length != 0){
+                for(var i = 0; i < cards_json.length; i++){
+                    if (cards_json[i] != ''){
+                        var card = cards_json[i].split(':');
+                        card_arr[(card[1]+'_'+this.level).replace(/ /i,'')] = this.get_card_image_url(card[0]);
+                    }
+                }
+            }
+            this.level++;
+            return card_arr;
+        },
+        render_paymentline: function(line){
+            var journal_type = line.cashregister.journal.type = line.cashregister.journal.type;
+            var el_html;
+            if (journal_type != 'cash'){
+                el_html  = openerp.qweb.render('Paymentline',{widget: this, line: line, cards: this.render_cards(line)});
+            }else{
+                el_html  = openerp.qweb.render('Paymentline',{widget: this, line: line});
+            }
+
+            el_html  = _.str.trim(el_html);
+
+            var el_node  = document.createElement('tbody');
+                el_node.innerHTML = el_html;
+                el_node = el_node.childNodes[0];
+                el_node.line = line;
+            var paymentline_delete;
+            if (journal_type != 'cash'){
+                paymentline_delete = el_node.querySelector('.paymentline-delete1');
+            }else{
+                paymentline_delete = el_node.querySelector('.paymentline-delete');
+            }
+
+            paymentline_delete.addEventListener('click', this.line_delete_handler);
+
+            el_node.addEventListener('click', this.line_click_handler);
+
+            var input = el_node.querySelector('input');
+            if (input !=null){
+                input.addEventListener('keyup', this.line_change_handler);
+            }
+
+            var radio_node_list = el_node.querySelectorAll('input[type=radio]');
+            for(var i = 0; i < radio_node_list.length; i++){
+                radio_node_list[i].addEventListener('click',this.radio_checked);
+            }
+
+            line.node = el_node;
+
+//            if (journal_type != 'cash'){
+//                $('.payment-info').hide();
+//            }else{
+//                $('.payment-info').show();
+//            }
+
+            return el_node;
+        },
+        radio_checked:function(){
+            var self = this;
+            $(':radio').not('[name*='+self.name+']').each(function(thais){
+                $(this).attr("checked",false);
+            });
         },
     });
 }
