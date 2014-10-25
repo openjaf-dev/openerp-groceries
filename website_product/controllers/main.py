@@ -37,12 +37,10 @@ class website_product(http.Controller):
         return request.website.render("website_product.product_show", values)
 
     @http.route(['/product/<model("product.template"):product>/delete'], type='http', auth="public", website=True, multilang=True)
-    def delete(self, product, search='', category='', filters='', **kwargs):
+    def delete_product(self, product, search='', category='', filters='', **kwargs):
         if product:
             product_obj = request.registry.get('product.template')
             product_ids = [product.id]
-#             product_ids += product.id
-#             product = product_obj.browse(request.cr, request.uid, int(product), context=request.context)
             product_obj.unlink(request.cr, request.uid, product_ids, context=request.context)
         return request.redirect("/products")
 
@@ -67,14 +65,14 @@ class website_product(http.Controller):
     #User image not ready....
     @http.route(['/users'], type='http', auth="public", website=True, multilang=True)
     def users(self, **post):
-        respartner_obj = request.registry['res.users']
-        respartner_ids = respartner_obj.search(request.cr, request.uid, [],
+        resusers_obj = request.registry['res.users']
+        resusers_ids = resusers_obj.search(request.cr, request.uid, [],
                                      context=request.context)
         values = {
-            'respartner_ids': respartner_obj.browse(request.cr, request.uid, respartner_ids,
+            'resusers_ids': resusers_obj.browse(request.cr, request.uid, resusers_ids,
                                           request.context)
         }
-        return request.website.render("website_product.partner_index", values)
+        return request.website.render("website_product.users_index", values)
 
     @http.route(['/user/<model("res.partner"):user>'], type='http', auth="public", website=True, multilang=True)
     def user(self, user, search='', filters='', **kwargs):
@@ -86,6 +84,14 @@ class website_product(http.Controller):
             'user': user
         }
         return request.website.render("website_product.user_show", values)
+
+    @http.route(['/user/<model("res.partner"):user>/delete'], type='http', auth="public", website=True, multilang=True)
+    def delete_user(self, user, search='', filters='', **kwargs):
+        if user:
+            user_obj = request.registry.get('res.partner')
+            user_ids = [user.id]
+            user_obj.unlink(request.cr, request.uid, user_ids, context=request.context)
+        return request.redirect("/users")
 
 # Session Start
 

@@ -4,22 +4,22 @@
 <!-- Page -->
 
 
-<template id="partner_index" name="Partners">
+<template id="users_index" name="Partners">
     <t t-call="website.layout">
         <section class="container">
-            <div class="col-sm-12 text-center" t-if="len(respartner_ids)">
+            <div class="col-sm-12 text-center" t-if="len(resusers_ids)">
                 <h2>Users</h2>
                 <a  t-attf-href="/web/signup" class="btn btn-primary" groups="base.group_erp_manager">Sign up</a>
                 
             </div>
-            <div t-foreach="respartner_ids" t-as="respartner" class="col-sm-3 col-lg-2 mt16 text-center colsize">
+            <div t-foreach="resusers_ids" t-as="resuser" class="col-sm-3 col-lg-2 mt16 text-center colsize">
                 <!-- <t t-call="website.publish_management"><t t-set="object" t-value="product"/></t> -->
                 <div class="clearfix"/>
                 <!-- <img t-att-src="product.img('image_medium')" class="img shadow img-rounded"/> -->                
-                <img t-att-src="respartner.image" class="img shadow img-rounded"/>
+                <img t-att-src="resuser.image" class="img shadow img-rounded"/>
                 <div class="mt8">
-                    <a t-attf-href="/user/#{ slug(respartner.partner_id)}">
-                        <strong t-field="respartner.name"></strong>
+                    <a t-attf-href="/user/#{ slug(resuser.partner_id)}">
+                        <strong t-field="resuser.name"></strong>
                     </a>
                 </div>
 
@@ -40,10 +40,10 @@
         <section class="container oe_website_sale" id="user_detail">
           <div class="row">
             <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                <h1 itemprop="name" t-field="user.name">User Name</h1>               
+                <h2 itemprop="name" t-field="user.name"/>                               
             </div>
           </div>
-
+          <a t-attf-href="/user/#{ slug(user.partner_id)}/delete" class="btn btn-primary" groups="base.group_erp_manager">Delete</a>            
         </section>
   </t>
 </template>
