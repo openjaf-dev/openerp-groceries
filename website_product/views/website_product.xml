@@ -48,6 +48,8 @@
                 <span itemprop="url" style="display:none;" t-esc="'/shop/product/%s' % slug(product)"/>
             </div>
           </div>
+          <a  t-attf-href="/product/#{ slug(product)}/delete" class="btn btn-primary" groups="base.group_erp_manager">Delete</a>
+          
         </section>
         <div itemprop="description" t-field="product.description" class="oe_structure mt16" id="product_full_description"/>
       </div>

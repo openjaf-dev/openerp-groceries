@@ -2,6 +2,9 @@
 
 from openerp.addons.web import http
 from openerp.addons.web.http import request
+from openerp.addons.auth_signup.res_users import SignupError
+from openerp.addons.auth_signup.controllers.main import AuthSignupHome as Pepe 
+
 
 
 class website_product(http.Controller):
@@ -32,6 +35,17 @@ class website_product(http.Controller):
             'category': category,
         }
         return request.website.render("website_product.product_show", values)
+
+    @http.route(['/product/<model("product.template"):product>/delete'], type='http', auth="public", website=True, multilang=True)
+    def delete(self, product, search='', category='', filters='', **kwargs):
+        if product:
+            product_obj = request.registry.get('product.template')
+            product_ids = [product.id]
+#             product_ids += product.id
+#             product = product_obj.browse(request.cr, request.uid, int(product), context=request.context)
+            product_obj.unlink(request.cr, request.uid, product_ids, context=request.context)
+        return request.redirect("/products")
+
 
     @http.route(['/create'], type='http', auth="public", website=True, multilang=True)
     def create_a_product(self, **post):
@@ -90,7 +104,28 @@ class website_product(http.Controller):
         
         return request.website.render("website_product.pos_session", values)
         
+
+class AuthSignupHome(Pepe):
     
-    
+    @http.route()
+    def web_auth_signup(self, *args, **kw):
+        qcontext = self.get_auth_signup_qcontext()
+
+        if not qcontext.get('token') and not qcontext.get('signup_enabled'):
+            raise werkzeug.exceptions.NotFound()
+
+        if 'error' not in qcontext and request.httprequest.method == 'POST':
+            try:
+                self.do_signup(qcontext)
+                return super(AuthSignupHome, self).web_login(*args, **kw)
+            except (SignupError, AssertionError), e:
+                qcontext['error'] = _(e.message)
+        
+        resgroups_obj = request.registry.get('res.groups')
+        groups_ids = resgroups_obj.search(request.cr, request.uid, [], context=request.context)            
+        qcontext['groups'] = groups_ids         
+
+        return request.render('auth_signup.signup', qcontext)        
+        
         
         

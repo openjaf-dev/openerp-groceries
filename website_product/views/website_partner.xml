@@ -9,7 +9,7 @@
         <section class="container">
             <div class="col-sm-12 text-center" t-if="len(respartner_ids)">
                 <h2>Users</h2>
-                <a  t-attf-href="/web/signup?redirect=/web%3f{{ quote_plus(keep_query()) }}" class="btn btn-primary" groups="base.group_erp_manager">Sign up</a>
+                <a  t-attf-href="/web/signup" class="btn btn-primary" groups="base.group_erp_manager">Sign up</a>
                 
             </div>
             <div t-foreach="respartner_ids" t-as="respartner" class="col-sm-3 col-lg-2 mt16 text-center colsize">
