@@ -36,11 +36,6 @@ Created on 23/10/2014
 
 class groceries_import_wizard(TransientModel):
 
-    worksheet = None
-    num_rows = None
-    num_cells = None
-    SEARCH_VALS = [u'Name', u'Product_UPC']
-
     def _get_image(self, cr, uid, context=None):
         path = os.path.join('groceries_data_import_export', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
         image_file = tools.file_open(path, 'rb')
@@ -56,10 +51,9 @@ class groceries_import_wizard(TransientModel):
 
     _name = "groceries.import.wizard"
     _columns = {
-        'product_category_file': fields.binary('Product Category File', filename="module_filename", filters='*.xlsx',
+        'product_category_file': fields.binary('Reference Catalogue', filename="module_filename", filters='*.xlsx',
                                                required=True),
         'config_logo': fields.function(_get_image_fn, string='Image', type='binary', readonly=True),
-        'category_product_rel': fields.char(string='Category Product Rel', size=1000000),
     }
 
     _defaults = {
@@ -70,96 +64,81 @@ class groceries_import_wizard(TransientModel):
         obj = self.browse(cr, uid, ids[0])
 
         if obj.product_category_file:
-            self.open_worbook(obj.product_category_file)
-            find_res = self.find_column_by_name()
-            self.persist_data(cr, uid, find_res, ids[0], context)
+            products = self.read_worbook(cr, uid,obj.product_category_file)
+            self.process_data(cr, uid,products)
             obj = self.browse(cr, uid, ids[0])
             return {
                  'view_type': 'form',
-                 'name': 'Groceries Import Process Step 2. Select Product File',
+                 'name': 'Finish',
                  'view_mode': 'form',
                  'res_model': 'groceries.import.wizard1',
                  'views': [],
                  'type': 'ir.actions.act_window',
                  'target': 'new',
                  'context': {
-                     'category_product_rel': obj.category_product_rel,
                  }
-            }
-
-
-    def open_worbook(self, binary_file):
-        res = {}
-
+            }   
+                    
+    def read_worbook(self,cr, uid, binary_file, context= None):
         str_file = base64.decodestring(binary_file)
         workbook = xlrd.open_workbook(file_contents=str_file, encoding_override='cp1252')
-        self.worksheet = workbook.sheet_by_index(0)
-        self.num_rows = self.worksheet.nrows - 1
-        self.num_cells = self.worksheet.ncols - 1
-
-    def find_column_by_name(self):
-        result = {}
-        curr_row = -1
-        quantity_of_columns = len(self.SEARCH_VALS)
-        counter = 0
-
-        while curr_row < self.num_rows:
-            curr_row += 1
-            #row = self.worksheet.row(curr_row)
-            curr_cell = -1
-            if counter >= quantity_of_columns:
-                break
-            else:
-                while curr_cell < self.num_cells:
-                    curr_cell += 1
-                    # Cell Types: 0=Empty, 1=Text, 2=Number, 3=Date, 4=Boolean, 5=Error, 6=Blank
-                    #cell_type = worksheet.cell_type(curr_row, curr_cell)
-                    #cell_name = xlrd.cellname(curr_row, curr_cell)
-                    cell_value = self.worksheet.cell_value(curr_row, curr_cell)
-                    if cell_value:
-                        if cell_value in self.SEARCH_VALS:
-                            counter += 1
-                            result[cell_value] = {'row': curr_row, 'col': curr_cell}
-        return result
-
-    def persist_data(self, cr, uid, source, id, context=None):
-        result = {}
-        source_name = source.get(u'Name')
-        curr_row = source_name.get('row')
-        category_product_rel = ''
-
-        while curr_row < self.num_rows:
-            curr_row += 1
-            curr_cell = source_name.get('col')
-            while curr_cell < self.num_cells + 1:
-                cell_str_value = self.worksheet.cell_value(int(curr_row), int(curr_cell))
-                if curr_cell != self.num_cells:
-                    # id_category = self.pool.get('product.category').create(cr, uid, {'name': cell_str_value})
-                    if cell_str_value.rindex('(') > 0:
-                        cell_str_value = cell_str_value[cell_str_value.index(')')+2:cell_str_value.rindex('(')-1]
-                    else:
-                        cell_str_value = cell_str_value[cell_str_value.index(')')+2:]
-                    arr_tree_catgorie = cell_str_value.split('/')
-                    if len(arr_tree_catgorie) == 1:
-                        cr.execute('insert into product_category (name) values (%s) returning id', (cell_str_value,))
-                        id_category = cr.fetchone()[0]
-                        category_product_rel = category_product_rel + str(id_category) + ':'
-                    else:
-                        parent_id = False
-                        for cat in arr_tree_catgorie:
-                            if not parent_id:
-                                cr.execute('insert into product_category (name) values (%s) returning id', (cat,))
-                                parent_id = cr.fetchone()[0]
-                            else:
-                                cr.execute('insert into product_category (name,parent_id) values (%s,%s) returning id',
-                                           (cat, parent_id))
-                                parent_id = cr.fetchone()[0]
-                        category_product_rel = category_product_rel + str(parent_id) + ':'
-
+        products = {}
+        for sheet_index in range(workbook.nsheets):
+            current_sheet = workbook.sheet_by_index(sheet_index)
+            for row_index in range(1,current_sheet.nrows):
+                upc = current_sheet.cell_value(row_index,1)
+                product_values = {}
+                for col_index in range(current_sheet.ncols):
+                    attribute = current_sheet.cell_value(0,col_index)
+                    value = current_sheet.cell_value(row_index,col_index)
+                    product_values.update({attribute:value})    
+                if upc in products:
+                    products[upc].update(product_values)
                 else:
-                    category_product_rel = category_product_rel + str(cell_str_value) + ','
-                curr_cell += 1
-        self.write(cr, uid, [id], {'category_product_rel': category_product_rel})
+                    if sheet_index == 1: 
+                        product = {upc:{}}
+                        products.update(product)                
+                        products[upc].update(product_values)
+        return products
+
+    def create_category(self, cr, uid,value,context=None): 
+        if not value:
+            return False
+        if value.rindex('(') > 0:
+            value = value[value.index(')')+2:value.rindex('(')-1]
+        else:
+            value = value[value.index(')')+2:]
+        category_tree = value.split('/')
+        pc = self.pool.get('product.category')
+        current_catg = False
+        for category in category_tree:
+            categ_id = pc.search(cr, uid, [('name', '=', category)], context=context)
+            if categ_id:
+                current_catg = categ_id[0]
+            else:
+                vals = {'name': category, 'parent_id': current_catg}
+                current_catg = pc.create(cr, uid, vals, context)
+        return current_catg
+
+    def process_data(self,cr, uid, products,context=None):
+        for k, product_data in products.items():
+            category_id = self.create_category(cr,uid,product_data['GS1 Category'])
+            name = product_data['Item Description']
+            description = product_data['Marketing Description']
+            default_code = product_data['UPC']
+            
+            product = self.pool.get('product.product')
+            product_id = product.search(cr, uid, [('default_code', '=', default_code)], context=context)
+            vals = {'name': name,
+                    'categ_id':category_id,
+                    'description':description,
+                    'default_code':default_code,
+                    }
+            if product_id:
+                product.write(cr,uid,product_id,vals,context)
+            else:
+                product.create(cr,uid,vals,context)
+        
 groceries_import_wizard()
 
 class groceries_import_wizard_1(TransientModel):
