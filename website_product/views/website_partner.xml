@@ -18,7 +18,7 @@
                 <!-- <img t-att-src="product.img('image_medium')" class="img shadow img-rounded"/> -->                
                 <img t-att-src="resuser.image" class="img shadow img-rounded"/>
                 <div class="mt8">
-                    <a t-attf-href="/user/#{ slug(resuser.partner_id)}">
+                    <a t-attf-href="/user/#{ slug(resuser.id)}">
                         <strong t-field="resuser.name"></strong>
                     </a>
                 </div>
@@ -35,15 +35,16 @@
     </xpath>
 </template>
 
+
 <template id="user_show" name="User">
   <t t-call="website.layout">
-        <section class="container oe_website_sale" id="user_detail">
+        <section class="container" id="user_detailsss">
           <div class="row">
             <div class="col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
                 <h2 itemprop="name" t-field="user.name"/>                               
             </div>
           </div>
-          <a t-attf-href="/user/#{ slug(user.partner_id)}/delete" class="btn btn-primary" groups="base.group_erp_manager">Delete</a>            
+          <a t-attf-href="/user/#{ slug(user)}/delete" class="btn btn-primary" groups="base.group_erp_manager">Delete</a>            
         </section>
   </t>
 </template>
