@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+
+import openerp
 from openerp.addons.web import http
 from openerp.addons.web.http import request
 from openerp.addons.auth_signup.res_users import SignupError
-from openerp.addons.auth_signup.controllers.main import AuthSignupHome as Pepe 
+# from  import  as Pepe 
 
 
 
@@ -44,7 +46,6 @@ class website_product(http.Controller):
             product_obj.unlink(request.cr, request.uid, product_ids, context=request.context)
         return request.redirect("/products")
 
-
     @http.route(['/create'], type='http', auth="public", website=True, multilang=True)
     def create_a_product(self, **post):
         product = request.registry.get('product.product')
@@ -63,6 +64,7 @@ class website_product(http.Controller):
 
     #TODO i have to do the delete user....
     #User image not ready....
+
     @http.route(['/users'], type='http', auth="public", website=True, multilang=True)
     def users(self, **post):
         resusers_obj = request.registry['res.users']
@@ -74,10 +76,10 @@ class website_product(http.Controller):
         }
         return request.website.render("website_product.users_index", values)
 
-    @http.route(['/user/<model("res.partner"):user>'], type='http', auth="public", website=True, multilang=True)
+    @http.route(['/user/<model("res.users"):user>'], type='http', auth="public", website=True, multilang=True)
     def user(self, user, search='', filters='', **kwargs):
         if user:
-            user_obj = request.registry.get('res.partner')
+            user_obj = request.registry.get('res.users')
             user = user_obj.browse(request.cr, request.uid, int(user), context=request.context)
 
         values = {
@@ -85,10 +87,10 @@ class website_product(http.Controller):
         }
         return request.website.render("website_product.user_show", values)
 
-    @http.route(['/user/<model("res.partner"):user>/delete'], type='http', auth="public", website=True, multilang=True)
+    @http.route(['/user/<model("res.users"):user>/delete'], type='http', auth="public", website=True, multilang=True)
     def delete_user(self, user, search='', filters='', **kwargs):
         if user:
-            user_obj = request.registry.get('res.partner')
+            user_obj = request.registry.get('res.users')
             user_ids = [user.id]
             user_obj.unlink(request.cr, request.uid, user_ids, context=request.context)
         return request.redirect("/users")
@@ -111,7 +113,7 @@ class website_product(http.Controller):
         return request.website.render("website_product.pos_session", values)
         
 
-class AuthSignupHome(Pepe):
+class AuthSignupHome(openerp.addons.auth_signup.controllers.main.AuthSignupHome):
     
     @http.route()
     def web_auth_signup(self, *args, **kw):

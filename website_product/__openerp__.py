@@ -9,7 +9,7 @@ Our Products
 
         """,
     'author': 'OpenJAF',
-    'depends': ['website', 'product'],
+    'depends': ['website', 'product', 'auth_signup'],
     'data': [
         'data/website_product_data.xml',
         'views/website_product.xml',
