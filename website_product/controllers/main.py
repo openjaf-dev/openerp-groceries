@@ -5,7 +5,6 @@ import openerp
 from openerp.addons.web import http
 from openerp.addons.web.http import request
 from openerp.addons.auth_signup.res_users import SignupError
-# from  import  as Pepe 
 
 
 
@@ -113,7 +112,7 @@ class website_product(http.Controller):
         return request.website.render("website_product.pos_session", values)
         
 
-class AuthSignupHome(openerp.addons.auth_signup.controllers.main.AuthSignupHome):
+class AnotherSignup(openerp.addons.auth_signup.controllers.main.AuthSignupHome):
     
     @http.route()
     def web_auth_signup(self, *args, **kw):
