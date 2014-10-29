@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-
-        <menuitem name="Import/Export Process" parent="point_of_sale.menu_point_root"
+        <menuitem name="Reference Catalogue" parent="point_of_sale.menu_point_root"
             id="menu_import_export_groceries" sequence="26" groups="point_of_sale.group_pos_manager"/>
 
         <menuitem name="Import Process" id="menu_import_process" parent="menu_import_export_groceries" action="action_groceries_import_wizard" sequence="1" />
