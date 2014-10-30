@@ -18,7 +18,7 @@
                 <!-- <img t-att-src="product.img('image_medium')" class="img shadow img-rounded"/> -->                
                 <img t-att-src="resuser.image" class="img shadow img-rounded"/>
                 <div class="mt8">
-                    <a t-attf-href="/user/#{ slug(resuser.id)}">
+                    <a t-attf-href="/user/#{ slug(resuser)}">
                         <strong t-field="resuser.name"></strong>
                     </a>
                 </div>
@@ -52,7 +52,6 @@
 <template id="auth_signup.signup" name="Sign up login">
     <t t-call="web.login_layout">
         <form class="oe_signup_form" role="form" t-attf-action="/web/signup{{ '?debug' if debug else '' }}" method="post" t-if="not message">
-
             <t t-call="auth_signup.fields"/>
 
           Roles
