@@ -35,7 +35,7 @@ Created on 23/10/2014
 '''
 
 class groceries_import_wizard(TransientModel):
-
+    
     def _get_image(self, cr, uid, context=None):
         path = os.path.join('groceries_data_import_export', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
         image_file = tools.file_open(path, 'rb')
@@ -100,7 +100,52 @@ class groceries_import_wizard(TransientModel):
                         products.update(product)                
                         products[upc].update(product_values)
         return products
-
+    
+    def create_attribute_line(self,cr,uid,value,context=None):  
+        # TODO: Tengo que cambiar el motodo porque se repiten valores 
+        attribute_line_ids = []
+        attribute_line = self.pool.get('product.attribute.line')
+        attribute_value = self.pool.get('product.attribute.value')
+        for attr_value_id in value:
+            attr_line = [0,False]
+            attr_value_ids = []
+            attr_line_value = {}
+            attr_value = attribute_value.browse(cr, uid, attr_value_id, context=context)
+            attr_line_value['attribute_id'] = attr_value.attribute_id.id
+            attr_value_ids.append(attr_value.id)
+            attr_line_value['value_ids'] =[[6,False,attr_value_ids]]
+            attr_line.append(attr_line_value)
+            attribute_line_ids.append(attr_line)  
+            print attr_value.attribute_id.id
+        return attribute_line_ids
+            
+            
+        
+    def create_attribute_value(self,cr,uid,value,context=None):
+        CAMPOS = {'UPC','GS1 Category','Item Description','Marketing Description'}
+        attr_value_ids = []
+        attr = self.pool.get('product.attribute')
+        attr_value = self.pool.get('product.attribute.value')
+        for k,v in value.items():
+            if v != '':
+                if k not in CAMPOS:
+                    at_ids = attr.search(cr, uid, [('name', '=', k)], context=context)
+                    if not at_ids:
+                        vals = {'name': k}
+                        attr_id = attr.create(cr, uid, vals, context)
+                    else:
+                        attr_id = at_ids[0]
+                        
+                    at_value_ids = attr_value.search(cr, uid, [('name', '=', v),('attribute_id', '=', attr_id)], context=context)
+                    if not at_value_ids:
+                        vals = {'name': v, 'attribute_id': attr_id}
+                        attr_value_id = attr_value.create(cr, uid, vals, context)
+                    else:
+                        attr_value_id = at_value_ids[0]
+                    
+                    attr_value_ids.append(attr_value_id)       
+        return attr_value_ids
+                
     def create_category(self, cr, uid,value,context=None): 
         if not value:
             return False
@@ -126,18 +171,22 @@ class groceries_import_wizard(TransientModel):
             name = product_data['Item Description']
             description = product_data['Marketing Description']
             default_code = product_data['UPC']
+            attribute_value_ids = self.create_attribute_value(cr, uid, product_data, context)
+            attribute_line_ids = self.create_attribute_line(cr,uid,attribute_value_ids,context) 
             
             product = self.pool.get('product.product')
             product_id = product.search(cr, uid, [('default_code', '=', default_code)], context=context)
             vals = {'name': name,
-                    'categ_id':category_id,
-                    'description':description,
-                    'default_code':default_code,
+                    'categ_id' : category_id,
+                    'description' : description,
+                    'default_code' : default_code,
+                    'attribute_line_ids':attribute_line_ids
                     }
             if product_id:
-                product.write(cr,uid,product_id,vals,context)
+                product.write(cr,uid,product_id,vals,context)  
             else:
-                product.create(cr,uid,vals,context)
+               product_id = product.create(cr,uid,vals,context)
+            
         
 groceries_import_wizard()
 
