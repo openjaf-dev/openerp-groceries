@@ -102,7 +102,6 @@ class groceries_import_wizard(TransientModel):
         return products
     
     def create_attribute_line(self,cr,uid,value,context=None):  
-        # TODO: Tengo que cambiar el motodo porque se repiten valores 
         attribute_line_ids = []
         attribute_line = self.pool.get('product.attribute.line')
         attribute_value = self.pool.get('product.attribute.value')
