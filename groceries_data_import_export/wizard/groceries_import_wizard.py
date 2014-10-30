@@ -101,21 +101,35 @@ class groceries_import_wizard(TransientModel):
                         products[upc].update(product_values)
         return products
     
-    def create_attribute_line(self,cr,uid,value,context=None):  
+    def create_attribute_line(self,cr,uid,value,product_id,context=None):  
         attribute_line_ids = []
-        attribute_line = self.pool.get('product.attribute.line')
-        attribute_value = self.pool.get('product.attribute.value')
+        product = self.pool.get('product.product')
+        product_attr_line = self.pool.get('product.attribute.line')
+        product_attr_value = self.pool.get('product.attribute.value')
+        
+        product_tmpl_id = -1
+        if product_id:
+            product_tmpl_id = product.browse(cr, uid, product_id, context=context).product_tmpl_id.id
+    
+            
         for attr_value_id in value:
-            attr_line = [0,False]
+            attr_value = product_attr_value.browse(cr, uid, attr_value_id, context=context)
+            attr_id = attr_value.attribute_id.id
+            p_attr_line = -1
+            if product_tmpl_id !=-1:
+                p_attr_line = product_attr_line.search(cr, uid, [('product_tmpl_id', '=', product_tmpl_id),('attribute_id', '=', attr_id)], context=context)
+            if p_attr_line !=-1:
+                attr_line = [1,p_attr_line[0]]
+            else:
+                attr_line = [0,False]
             attr_value_ids = []
             attr_line_value = {}
-            attr_value = attribute_value.browse(cr, uid, attr_value_id, context=context)
-            attr_line_value['attribute_id'] = attr_value.attribute_id.id
+
+            attr_line_value['attribute_id'] = attr_id
             attr_value_ids.append(attr_value.id)
             attr_line_value['value_ids'] =[[6,False,attr_value_ids]]
             attr_line.append(attr_line_value)
-            attribute_line_ids.append(attr_line)  
-            print attr_value.attribute_id.id
+            attribute_line_ids.append(attr_line)
         return attribute_line_ids
             
             
@@ -165,16 +179,19 @@ class groceries_import_wizard(TransientModel):
         return current_catg
 
     def process_data(self,cr, uid, products,context=None):
+        
+        product = self.pool.get('product.product')
+        
         for k, product_data in products.items():
             category_id = self.create_category(cr,uid,product_data['GS1 Category'])
             name = product_data['Item Description']
             description = product_data['Marketing Description']
             default_code = product_data['UPC']
             attribute_value_ids = self.create_attribute_value(cr, uid, product_data, context)
-            attribute_line_ids = self.create_attribute_line(cr,uid,attribute_value_ids,context) 
             
-            product = self.pool.get('product.product')
             product_id = product.search(cr, uid, [('default_code', '=', default_code)], context=context)
+            attribute_line_ids = self.create_attribute_line(cr,uid,attribute_value_ids,product_id,context) 
+            
             vals = {'name': name,
                     'categ_id' : category_id,
                     'description' : description,
