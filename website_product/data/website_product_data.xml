@@ -2,7 +2,6 @@
 <openerp>
     <data noupdate="1">
 
-        <!-- TODO permitions left-->
         <record id="menu_products" model="website.menu">
             <field name="name">Products</field>
             <field name="url">/products</field>
@@ -12,27 +11,37 @@
 
         <record id="menu_pos" model="website.menu">
             <field name="name">POS Session</field>
-            <field name="url">/pos/session</field>
+            <field name="url">/pos/web#</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">50</field>
+        </record>
+
+        <record id="menu_posi" model="website.menu">
+            <field name="name">POSI Session</field>
+            <field name="url">/posi/web#</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">52</field>
         </record>
 
         <record id="menu_users" model="website.menu">
             <field name="name">Users</field>
             <field name="url">/users</field>
             <field name="parent_id" ref="website.main_menu"/>
-            <field name="sequence" type="int">51</field>
+            <field name="sequence" type="int">53</field>
         </record>
 
-       <!--  <record id="action_open_website" model="ir.actions.act_url">
-            <field name="name">Website About</field>
-            <field name="target">self</field>
-            <field name="url">/page/website.aboutus</field>
+
+    <!--
+         <record id="action_create_company_wizard" model="website.menu">
+            <field name="name">Company Wizard</field>
+            <field name="res_model">create.company.wizard</field>
+            <field name="view_id" ref="view_create_company_wizard"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
         </record>
-        <record id="base.open_menu" model="ir.actions.todo">
-            <field name="action_id" ref="action_open_website"/>
-            <field name="state">open</field>
-        </record> -->
+
+        -->
 
     </data>
 </openerp>
