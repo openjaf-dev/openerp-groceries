@@ -19,9 +19,9 @@
 #
 ##############################################################################
 {
-    "name": "Groceries Data Import/Export",
+    "name": "Groceries Reference Catalog",
     "version": "1.0",
-    'author': 'Antonio Mauri Garcia',
+    'author': 'OpenJAF',
     "category": 'Data Load',
     'complexity': "easy",
     "description": """""",
