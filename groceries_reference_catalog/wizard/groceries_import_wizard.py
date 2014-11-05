@@ -27,7 +27,10 @@ from openerp.tools.translate import _
 import base64
 import openerp.tools as tools
 import xlrd
+import urllib
+import Image
 from openerp.osv.orm import TransientModel
+from tempfile import NamedTemporaryFile
 
 '''
 Created on 23/10/2014
@@ -37,7 +40,7 @@ Created on 23/10/2014
 class groceries_import_wizard(TransientModel):
     
     def _get_image(self, cr, uid, context=None):
-        path = os.path.join('groceries_data_import_export', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
+        path = os.path.join('groceries_reference_catalog', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
         image_file = tools.file_open(path, 'rb')
         try:
             file_data = image_file.read()
@@ -51,7 +54,7 @@ class groceries_import_wizard(TransientModel):
 
     _name = "groceries.import.wizard"
     _columns = {
-        'product_category_file': fields.binary('Reference Catalogue', filename="module_filename", filters='*.xlsx',
+        'product_category_file': fields.binary('Reference Catalog', filename="module_filename", filters='*.xlsx',
                                                required=True),
         'config_logo': fields.function(_get_image_fn, string='Image', type='binary', readonly=True),
     }
@@ -78,27 +81,45 @@ class groceries_import_wizard(TransientModel):
                  'context': {
                  }
             }   
-                    
+                                 
     def read_worbook(self,cr, uid, binary_file, context= None):
         str_file = base64.decodestring(binary_file)
         workbook = xlrd.open_workbook(file_contents=str_file, encoding_override='cp1252')
         products = {}
         for sheet_index in range(workbook.nsheets):
             current_sheet = workbook.sheet_by_index(sheet_index)
-            for row_index in range(1,current_sheet.nrows):
-                upc = current_sheet.cell_value(row_index,1)
-                product_values = {}
-                for col_index in range(current_sheet.ncols):
-                    attribute = current_sheet.cell_value(0,col_index)
-                    value = current_sheet.cell_value(row_index,col_index)
-                    product_values.update({attribute:value})    
-                if upc in products:
-                    products[upc].update(product_values)
-                else:
-                    if sheet_index == 1: 
-                        product = {upc:{}}
-                        products.update(product)                
+            if (current_sheet.name!='media'):
+                for row_index in range(1,current_sheet.nrows):
+                    upc = current_sheet.cell_value(row_index,1)
+                    product_values = {}
+                    for col_index in range(current_sheet.ncols):
+                        attribute = current_sheet.cell_value(0,col_index)
+                        value = current_sheet.cell_value(row_index,col_index)
+                        product_values.update({attribute:value})
+                    if upc in products:
                         products[upc].update(product_values)
+                    else:
+                        # Solo los objetos que estan identificados en la primera pestana 
+                        if sheet_index == 1: 
+                            product = {upc:{}}
+                            products.update(product)                
+                            products[upc].update(product_values)
+            else:
+                for row_index in range(1,current_sheet.nrows):
+                    upc = current_sheet.cell_value(row_index,1)
+                    images = {}
+                    for col_index in range(current_sheet.ncols):
+                        attribute = current_sheet.cell_value(0,col_index)
+                        if attribute.find("Description")>= 0: 
+                            attribute = current_sheet.cell_value(row_index,col_index)
+                            value = current_sheet.cell_value(row_index,col_index+1)
+                            if attribute!='' and value!='':
+                                images.update({attribute:value})
+                    if upc in products:
+                        if 'Images' not in products[upc]:
+                            product_values = {'Images':{}}
+                            products[upc].update(product_values)
+                        products[upc]['Images'].update(images)
         return products
     
     def create_attribute_line(self,cr,uid,value,product_id,context=None):  
@@ -135,7 +156,7 @@ class groceries_import_wizard(TransientModel):
             
         
     def create_attribute_value(self,cr,uid,value,context=None):
-        CAMPOS = {'UPC','GS1 Category','Item Description','Marketing Description'}
+        CAMPOS = {'UPC','GS1 Category','Item Description','Marketing Description','Images'}
         attr_value_ids = []
         attr = self.pool.get('product.attribute')
         attr_value = self.pool.get('product.attribute.value')
@@ -178,6 +199,22 @@ class groceries_import_wizard(TransientModel):
                 current_catg = pc.create(cr, uid, vals, context)
         return current_catg
 
+    def get_image(self,cr,uid,images,context=None):
+        proxies = {'http': 'http://jose.hernandez%40icrt.cu:Jose@ndres272427@10.3.2.12:3128'}
+        for k,v in images.items():
+            url = v
+            if k.find("Front")>= 0:
+                online_image = urllib.urlopen(url,proxies=proxies)
+                EXJPG = ".jpg"
+                other_format = NamedTemporaryFile()
+                jpg_format = NamedTemporaryFile(suffix=EXJPG)
+                other_format.write(online_image.read())
+                other_format.flush()
+                Image.open(other_format.name).save(jpg_format.name)
+                image_file = tools.file_open(jpg_format.name, 'rb')
+                file_data = image_file.read()  
+        return base64.encodestring(file_data)
+    
     def process_data(self,cr, uid, products,context=None):
         
         product = self.pool.get('product.product')
@@ -187,6 +224,8 @@ class groceries_import_wizard(TransientModel):
             name = product_data['Item Description']
             description = product_data['Marketing Description']
             default_code = product_data['UPC']
+            if 'Images' in product_data:
+                image = self.get_image(cr,uid,product_data['Images'],context)
             attribute_value_ids = self.create_attribute_value(cr, uid, product_data, context)
             
             product_id = product.search(cr, uid, [('default_code', '=', default_code)], context=context)
@@ -196,20 +235,18 @@ class groceries_import_wizard(TransientModel):
                     'categ_id' : category_id,
                     'description' : description,
                     'default_code' : default_code,
-                    'attribute_line_ids':attribute_line_ids
+                    'attribute_line_ids':attribute_line_ids,
+                    'image':image,
                     }
             if product_id:
                 product.write(cr,uid,product_id,vals,context)  
             else:
                product_id = product.create(cr,uid,vals,context)
             
-        
-groceries_import_wizard()
-
 class groceries_import_wizard_1(TransientModel):
 
     def _get_image(self, cr, uid, context=None):
-        path = os.path.join('groceries_data_import_export', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
+        path = os.path.join('groceries_reference_catalog', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
         image_file = tools.file_open(path, 'rb')
         try:
             file_data = image_file.read()
@@ -234,5 +271,3 @@ class groceries_import_wizard_1(TransientModel):
 
     def check_product_step2(self, cr, uid, ids, context= None):
         return False
-
-groceries_import_wizard_1()
