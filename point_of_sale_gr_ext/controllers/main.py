@@ -9,7 +9,7 @@ import random
 from openerp import http
 from openerp.addons.point_of_sale.controllers import main
 from openerp.http import request
-from openerp.addons.web.controllers.main import manifest_list, module_boot, html_template
+from openerp.addons.web.controllers.main import manifest_list, module_boot#, html_template
 
 _logger = logging.getLogger(__name__)
 

@@ -58,3 +58,8 @@ docs/_build/
 
 # diff
 .orig
+
+#bin
+catalogo1items.xls
+catalogo50items.xls
+
