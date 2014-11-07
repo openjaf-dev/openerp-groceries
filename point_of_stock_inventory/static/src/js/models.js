@@ -221,9 +221,8 @@ function openerp_posi_models(instance, module){ //module is instance.point_of_sa
                         'product.product', 
                         ['name', 'list_price','price','public_categ_id', 'taxes_id', 'ean13', 'default_code',
                          'to_weight', 'uom_id', 'uos_id', 'uos_coeff', 'mes_type', 'description_sale', 'qty_available',
-                            'qty_alert', 'description'],
-                        [['sale_ok','=',true],['available_in_pos','=',true]],
-                        {pricelist: self.pricelist.id} // context for price
+                            'qty_alert', 'procurements_json_str', 'description'],
+                        [['available_in_pos','=',true]] // context for price
                     );
                 }).then(function(products){
                     self.db.add_products(products);

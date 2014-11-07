@@ -27,7 +27,7 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
                             oldest_key  = key;
                         }
                     }
-                    if(oldestKey){
+                    if(key){
                         delete this.cache[oldest_key];
                         delete this.access_time[oldest_key];
                     }
@@ -149,10 +149,10 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
                     
         },
         disable_numpad: function(){
-            if(this.numpad_state){
-                this.numpad_state.unbind('set_value',  this.set_value);
-                this.numpad_state.reset();
-            }
+//            if(this.numpad_state){
+//                this.numpad_state.unbind('set_value',  this.set_value);
+//                this.numpad_state.reset();
+//            }
         },
         set_editable: function(editable){
             this.editable = editable;
@@ -165,16 +165,16 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
         },
         set_value: function(val) {
         	var order = this.pos.get('selectedOrder');
-        	if (this.editable && order.getSelectedLine()) {
-                var mode = this.numpad_state.get('mode');
-                if( mode === 'quantity'){
-                    order.getSelectedLine().set_quantity(val);
-                }else if( mode === 'discount'){
-                    order.getSelectedLine().set_discount(val);
-                }else if( mode === 'price'){
-                    order.getSelectedLine().set_unit_price(val);
-                }
-        	}
+//        	if (this.editable && order.getSelectedLine()) {
+//                var mode = this.numpad_state.get('mode');
+//                if( mode === 'quantity'){
+//                    order.getSelectedLine().set_quantity(val);
+//                }else if( mode === 'discount'){
+//                    order.getSelectedLine().set_discount(val);
+//                }else if( mode === 'price'){
+//                    order.getSelectedLine().set_unit_price(val);
+//                }
+//        	}
         },
         change_selected_order: function() {
             this.bind_orderline_events();
@@ -184,12 +184,12 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
             var lines = this.pos.get('selectedOrder').get('orderLines');
                 lines.unbind();
                 lines.bind('add', function(){ 
-                        this.numpad_state.reset();
+//                        this.numpad_state.reset();
                         this.renderElement(true);
                     },this);
                 lines.bind('remove', function(line){
                         this.remove_orderline(line);
-                        this.numpad_state.reset();
+//                        this.numpad_state.reset();
                         this.update_summary();
                     },this);
                 lines.bind('change', function(line){
@@ -1108,8 +1108,8 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
             this.action_bar = new module.ActionBarWidget(this);
             this.action_bar.replace(this.$(".placeholder-RightActionBar"));
 
-//            this.left_action_bar = new module.ActionBarWidget(this);
-//            this.left_action_bar.replace(this.$('.placeholder-LeftActionBar'));
+            this.left_action_bar = new module.ActionBarWidget(this);
+            this.left_action_bar.replace(this.$('.placeholder-LeftActionBar'));
 
 //            this.paypad = new module.PaypadWidget(this, {});
 //            this.paypad.replace(this.$('.placeholder-PaypadWidget'));
@@ -1117,8 +1117,8 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
 //            this.numpad = new module.NumpadWidget(this);
 //            this.numpad.replace(this.$('.placeholder-NumpadWidget'));
 
-//            this.order_widget = new module.OrderWidget(this, {});
-//            this.order_widget.replace(this.$('.ProductListWidget'));
+            this.productleftactwidget = new module.ProductLeftActWidget(this, {});
+            this.productleftactwidget.replace(this.$('.placeholder-ProductLeftActWidget'));
 
             this.onscreen_keyboard = new module.OnscreenKeyboardWidget(this, {
                 'keyboard_model': 'simple'
@@ -1188,15 +1188,15 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
             }
         },
         set_left_action_bar_visible: function(visible){
-//            if(visible !== this.left_action_bar_visible){
-//                this.left_action_bar_visible = visible;
-//                if(visible){
-//                    this.set_numpad_visible(false);
-//                    this.left_action_bar.show();
-//                }else{
-//                    this.left_action_bar.hide();
-//                }
-//            }
+            if(visible !== this.left_action_bar_visible){
+                this.left_action_bar_visible = visible;
+                if(visible){
+                    this.set_numpad_visible(false);
+                    this.left_action_bar.show();
+                }else{
+                    this.left_action_bar.hide();
+                }
+            }
         },
         //shows or hide the leftpane (contains the list of orderlines, the numpad, the paypad, etc.)
         set_leftpane_visible: function(visible){
@@ -1248,5 +1248,80 @@ function openerp_posi_widgets(instance, module){ //module is instance.point_of_s
             instance.webclient.set_content_full_screen(false);
             this._super();
         }
+    });
+
+    module.ProductLeftActWidget = module.PosBaseWidget.extend({
+        template: 'ProductLeftActWidget',
+        init: function(parent, options){
+            options = options || {};
+            var self = this;
+            this._super(parent, options);
+            this.product = options.product;
+            this.procurements = new Array();
+            this.qty_available = 0.0;
+            this.product_id = 0;
+            this.hide();
+        },
+        get_product_image_url: function(){
+            return window.location.origin + '/web/binary/image?model=product.product&field=image_medium&id='+this.product.id;
+        },
+        get_procurement_orders: function(){
+            var json = new Array();
+            if (this.product.procurements_json_str != ''){
+                json = JSON.parse(this.product.procurements_json_str);
+            }
+            return json
+        },
+        set_product: function(product){
+            this.product = product;
+            this.product_id = product.id
+            this.image_url = this.get_product_image_url();
+            this.description = product.description;
+            this.procurements = this.get_procurement_orders();
+            this.qty_available = product.qty_available;
+        },
+        get_product: function(){
+            return this.product;
+        },
+        close_detail_view: function(){
+            $('.rightpane').css('position', 'static');
+            $('.pos-leftpane').css('display', 'none');
+            this.pos_widget.productleftactwidget.hide();
+        },
+        add_product_qty: function(){
+            var self = this;
+            var product_id = $(this.el.querySelector('#productid'))[0];
+            var product_quantity = $(this.el.querySelector('#prodqty'))[0];
+
+            var context = {
+                'active_id': parseInt(product_id.value)
+            }
+
+            var data = {
+                'new_quantity': product_quantity.value,
+                'location_id': 12
+            }
+
+            var posi_session = new instance.web.Model('posi.session')
+            posi_session.call('add_product_qty_from_ui',[data, context]).then(function(result){
+//                var client = {'id':result,'name':name.value}
+//                self.pos.get('selectedOrder').set_client(client);
+//				self.pos_widget.screen_selector.show_popup('success_action_popup');
+                self.renderElement();
+            });
+        },
+        renderElement: function(){
+            var self = this;
+            this._super();
+            this.$el.find('#addqtybutton').off('click').click(function(){
+                self.add_product_qty();
+            });
+
+            this.$el.find('#proddetailsclosebutton').off('click').click(function(){
+                self.close_detail_view();
+            });
+        },
+        show: function(){ this.$el.removeClass('oe_hidden'); },
+        hide: function(){ this.$el.addClass('oe_hidden'); }
     });
 }

@@ -137,8 +137,9 @@ class account_journal(osv.osv):
 
     _columns = {
         'credit_cards': fields.many2many('pos.credit.cards.conf', 'pos_credit_cards_conf_journal_rel',
-        'journal_id','pos_credit_cards_conf_id', 'Available Credit Cards', domain="[('ready_2_use', '=', True )]"),
-        'credit_cards_json_str': fields.function(_get_credit_cards_json, string='Card Json Encoding', type='char', size=32),
+        'journal_id', 'pos_credit_cards_conf_id', 'Available Credit Cards', domain="[('ready_2_use', '=', True )]"),
+        'credit_cards_json_str': fields.function(_get_credit_cards_json, string='Card Json Encoding', type='char',
+                                                 size=10000000),
     }
 
 
