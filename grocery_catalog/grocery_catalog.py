@@ -40,6 +40,7 @@ Created on 23/10/2014
 class grocery_catalog(Model):
     _name = "grocery.catalog"
     _columns = {
+        'name': fields.char('Name', size=255),
         'product_file': fields.binary('Reference Catalog', filename="module_filename", filters='*.xlsx',required=True),
     }
 

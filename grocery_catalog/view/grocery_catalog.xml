@@ -11,6 +11,7 @@
         <field name="model">grocery.catalog</field>
         <field name="arch" type="xml">
             <tree string="Catalog" >
+            	<field name="name"/>
             	<field name="product_file"/>
 				<button name="import_data" type="object" string="Import Data" icon="gtk-go-forward"/>
             </tree>
@@ -25,6 +26,7 @@
             	<sheet>
             		<group>
 						<group>
+							<field name="name"/>
 							<field name="product_file"/>
 						</group>
 					</group>
