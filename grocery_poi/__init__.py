@@ -20,8 +20,8 @@
 ##############################################################################
 
 import controllers
-import point_of_stock_inventory
-import posi_session_opening
+#import point_of_stock_inventory
+#import posi_session_opening
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

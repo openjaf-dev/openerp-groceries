@@ -21,9 +21,9 @@
 
 
 {
-    'name': 'Point of Stock Inventory',
+    'name': 'Point of Inventory',
     'version': '1.0.1',
-    'category': 'Point Of Stock Inventory',
+    'category': 'Point Of Inventory',
     'sequence': 6,
     'summary': 'Touchscreen Interface for Shops',
     'description': """
@@ -44,7 +44,7 @@ Main Features
     """,
     'author': 'Antonio Mauri Garcia',
     'images': ['images/pos_touch_screen.jpeg', 'images/pos_session.jpeg', 'images/pos_analysis.jpeg','images/sale_order_pos.jpeg','images/product_pos.jpeg'],
-    'depends': ['point_of_sale_gr_ext'],
+    'depends': ['grocery_pos'],
     'data': [
         'views/point_of_stock_inventory_view.xml',
     ],
