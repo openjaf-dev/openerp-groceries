@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+	<menuitem id="grocery_catalog" sequence="1" parent="base.menu_custom" name="Grocery Catalog" />
+	
+	<!-- Group -->
+	
+	<record id="grocery_catalog_view_tree" model="ir.ui.view">
+        <field name="name">grocery.catalog.view.tree</field>
+        <field name="model">grocery.catalog</field>
+        <field name="arch" type="xml">
+            <tree string="Catalog" >
+            	<field name="name"/>
+            	<field name="product_file"/>
+				<button name="import_data" type="object" string="Import Data" icon="gtk-go-forward"/>
+            </tree>
+        </field>
+    </record>
+	
+	<record id="grocery_catalog_view_form" model="ir.ui.view">
+        <field name="name">grocery.catalog.view.form</field>
+        <field name="model">grocery.catalog</field>
+        <field name="arch" type="xml">
+            <form string="Catalog" version="8.0">
+            	<sheet>
+            		<group>
+						<group>
+							<field name="name"/>
+							<field name="product_file"/>
+						</group>
+					</group>
+				</sheet>
+            </form>
+        </field>
+    </record>
+    
+    <record id="grocery_catalog_action" model="ir.actions.act_window">
+        <field name="name">Catalog</field>
+        <field name="res_model">grocery.catalog</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="grocery_catalog_view_tree"/>
+    </record>	
+	
+	<menuitem id="grocery_catalog_menu" sequence="1" parent="grocery_catalog" action="grocery_catalog_action"/>
+  
+  </data>
+</openerp>

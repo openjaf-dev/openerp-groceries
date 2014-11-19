@@ -19,16 +19,16 @@
 #
 ##############################################################################
 {
-    "name": "Groceries Reference Catalog",
+    "name": "Grocery Reference Catalog",
     "version": "1.0",
     'author': 'OpenJAF',
     "category": 'Data Load',
     'complexity': "easy",
     "description": """""",
     'website': '',
-    'depends': ['base', 'web', 'point_of_sale_gr_ext'],
+    'depends': ['base', 'web'],
     'init_xml': [],
-    'update_xml': ['view/groceries_import_wizard_view.xml', 'view/base_menu.xml'],
+    'update_xml': ['view/grocery_catalog.xml'],
     'js': [
         'static/src/js/import_export_ext.js',
         'static/src/js/main.js'

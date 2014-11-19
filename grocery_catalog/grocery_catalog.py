@@ -29,58 +29,28 @@ import openerp.tools as tools
 import xlrd
 import urllib
 import Image
-from openerp.osv.orm import TransientModel
+from openerp.osv.orm import Model
 from tempfile import NamedTemporaryFile
 
 '''
 Created on 23/10/2014
-@author: Antonio Mauri Garcia
+@author: José Andrés Hernández Bustio
 '''
 
-class groceries_import_wizard(TransientModel):
-    
-    def _get_image(self, cr, uid, context=None):
-        path = os.path.join('groceries_reference_catalog', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
-        image_file = tools.file_open(path, 'rb')
-        try:
-            file_data = image_file.read()
-            return base64.encodestring(file_data)
-        finally:
-            image_file.close()
-
-    def _get_image_fn(self, cr, uid, ids, name, args, context=None):
-        image = self._get_image(cr, uid, context)
-        return dict.fromkeys(ids, image)
-
-    _name = "groceries.import.wizard"
+class grocery_catalog(Model):
+    _name = "grocery.catalog"
     _columns = {
-        'product_category_file': fields.binary('Reference Catalog', filename="module_filename", filters='*.xlsx',
-                                               required=True),
-        'config_logo': fields.function(_get_image_fn, string='Image', type='binary', readonly=True),
+        'name': fields.char('Name', size=255),
+        'product_file': fields.binary('Reference Catalog', filename="module_filename", filters='*.xlsx',required=True),
     }
 
-    _defaults = {
-        'config_logo': _get_image
-    }
-
-    def check_product_category_step1(self, cr, uid, ids, context= None):
+    def import_data(self, cr, uid, ids, context= None):
         obj = self.browse(cr, uid, ids[0])
 
-        if obj.product_category_file:
-            products = self.read_worbook(cr, uid,obj.product_category_file)
+        if obj.product_file:
+            products = self.read_worbook(cr, uid,obj.product_file)
             self.process_data(cr, uid,products)
-            obj = self.browse(cr, uid, ids[0])
-            return {
-                 'view_type': 'form',
-                 'name': 'Finish',
-                 'view_mode': 'form',
-                 'res_model': 'groceries.import.wizard1',
-                 'views': [],
-                 'type': 'ir.actions.act_window',
-                 'target': 'new',
-                 'context': {
-                 }
-            }   
+            obj = self.browse(cr, uid, ids[0])  
                                  
     def read_worbook(self,cr, uid, binary_file, context= None):
         str_file = base64.decodestring(binary_file)
@@ -99,7 +69,6 @@ class groceries_import_wizard(TransientModel):
                     if upc in products:
                         products[upc].update(product_values)
                     else:
-                        # Solo los objetos que estan identificados en la primera pestana 
                         if sheet_index == 1: 
                             product = {upc:{}}
                             products.update(product)                
@@ -242,32 +211,3 @@ class groceries_import_wizard(TransientModel):
                 product.write(cr,uid,product_id,vals,context)  
             else:
                product_id = product.create(cr,uid,vals,context)
-            
-class groceries_import_wizard_1(TransientModel):
-
-    def _get_image(self, cr, uid, context=None):
-        path = os.path.join('groceries_reference_catalog', 'res', 'config_pixmaps', '%d.png' % random.randrange(1, 4))
-        image_file = tools.file_open(path, 'rb')
-        try:
-            file_data = image_file.read()
-            return base64.encodestring(file_data)
-        finally:
-            image_file.close()
-
-    def _get_image_fn(self, cr, uid, ids, name, args, context=None):
-        image = self._get_image(cr, uid, context)
-        return dict.fromkeys(ids, image)
-
-    _name = "groceries.import.wizard1"
-    _columns = {
-        'product_file': fields.binary('Product File', filename="module_filename", filters='*.xlsx',
-                                               required=True),
-        'config_logo': fields.function(_get_image_fn, string='Image', type='binary', readonly=True),
-    }
-
-    _defaults = {
-        'config_logo': _get_image
-    }
-
-    def check_product_step2(self, cr, uid, ids, context= None):
-        return False
