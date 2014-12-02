@@ -31,7 +31,7 @@
                         class="oe_highlight"
                     />
                     <button name="open_session_cb" type="object" string="New Session"
-                        attrs="{'invisible' : ['|', ('posi_state', '!=', False)]}"
+                        attrs="{'invisible' : [('posi_state', '!=', False)]}"
                         class="oe_highlight"
                     />
 

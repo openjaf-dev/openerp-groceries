@@ -36,6 +36,9 @@ html_template = """<!DOCTYPE html>
         <link rel="stylesheet" href="/point_of_stock_inventory/static/src/fonts/font-awesome-4.0.3/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/point_of_stock_inventory/static/src/css/posi.css" />
         <link rel="stylesheet" href="/point_of_stock_inventory/static/src/css/keyboard.css" />
+
+        <link rel='stylesheet' href='/web/static/lib/bootstrap/css/bootstrap.css'/>
+
         %(js)s
         <script type="text/javascript">
             $(function() {
@@ -79,3 +82,22 @@ class PosiController(http.Controller):
                      """
         }
         return r
+
+    # @http.route('/posi/web/product/qyt/upd', type='http', auth="none")
+    # def product_qyt_upd(self, redirect=None, **kw):
+    #     context = {'active_id': int(request.params['product_id'])}
+    #     # values = request.params.copy()
+    #     if not redirect:
+    #         redirect = '/posi/web'
+    #     # values['redirect'] = redirect
+    #     if request.httprequest.method == 'POST':
+    #         stock_change_product_qty_obj = request.registry['stock.change.product.qty']
+    #         stock_change_product_qty_val = {'new_quantity': request.params['prod_qty'], 'location_id': 12}
+    #         stock_change_product_qty_id = stock_change_product_qty_obj.create(request.cr, request.session.uid, stock_change_product_qty_val)
+    #         stock_change_product_qty_obj.change_product_qty(request.cr, request.session.uid, [stock_change_product_qty_id], context)
+    #         # uid = request.session.authenticate(request.session.db, request.params['login'], request.params['password'])
+    #         # if uid is not False:
+    #         #     return http.redirect_with_hash(redirect)
+    #         # values['error'] = "Wrong login/password"
+    #     # return render_bootstrap_template(request.session.db, 'web.login', values, lazy=True)
+    #     return http.redirect_with_hash(redirect)

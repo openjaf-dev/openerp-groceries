@@ -57,6 +57,9 @@ Main Features
     'installable': True,
     'application': True,
     'js': [
+        '../web/static/lib/bootstrap/js/bootstrap.js',
+        'static/src/lib/bootstrap-tab.js',
+        'static/src/lib/bootstrap-collapse.js',
         'static/lib/fastclick.js',
         'static/src/js/db.js',
         'static/src/js/models.js',

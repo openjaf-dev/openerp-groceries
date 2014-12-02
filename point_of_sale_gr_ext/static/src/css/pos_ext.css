@@ -1,3 +1,12 @@
+body {
+  margin: -1px !important;
+}
+
+.breadcrumb{
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
 .notes{
     float:right;
     color:#DDD;
@@ -252,7 +261,7 @@ background-position: 0 -64px;
 
 /*otros*/
 
-  .modal-footer .btn + .btn {
+.modal-footer .btn + .btn {
     margin-bottom: 0px;
     margin-left: 5px;
 }

@@ -79,6 +79,12 @@ class posi_session(Model):
         ('uniq_name', 'unique(name)', "The name of this POSI Session must be unique !"),
     ]
 
+    def add_product_qty_from_ui(self, cr, uid, data, context=None):
+        stock_change_product_qty_obj = self.pool.get('stock.change.product.qty')
+        stock_change_product_qty_id = stock_change_product_qty_obj.create(cr, uid, data)
+        stock_change_product_qty_obj.change_product_qty(cr, uid, [stock_change_product_qty_id], context)
+        return True
+
     def _check_unicity(self, cr, uid, ids, context=None):
         for session in self.browse(cr, uid, ids, context=None):
             # open if there is no session in 'opening_control', 'opened', 'closing_control' for one user
@@ -140,13 +146,15 @@ class posi_session(Model):
         return self.write(cr, uid, ids, {'state': 'opening_control'}, context=context)
 
     def wkf_action_closing_control(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')}, context=context)
+        return self.write(cr, uid, ids, {'state': 'closing_control', 'stop_at': time.strftime('%Y-%m-%d %H:%M:%S')},
+                          context=context)
 
     def wkf_action_close(self, cr, uid, ids, context=None):
         # Close CashBox
         self.write(cr, uid, ids, {'state': 'closed'}, context=context)
 
-        obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_stock_inventory', 'menu_point_stock_inventory_root')[1]
+        obj = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'point_of_stock_inventory',
+                                                                  'menu_point_stock_inventory_root')[1]
         return {
             'type': 'ir.actions.client',
             'name': 'Point of Stock Inventory Menu',
@@ -163,7 +171,8 @@ class posi_session(Model):
             if session.user_id.id != uid:
                 raise osv.except_osv(
                         _('Error!'),
-                        _("You cannot use the session of another users. This session is owned by %s. Please first close this one to use this point of sale." % session.user_id.name))
+                        _("You cannot use the session of another users. This session is owned by %s. Please first "
+                          "close this one to use this point of sale." % session.user_id.name))
         context.update({'active_id': ids[0]})
         return {
             'type': 'ir.actions.act_url',
@@ -187,6 +196,8 @@ class ean_wizard(TransientModel):
             self.pool[m].write(cr, uid, [m_id], {'ean13':ean13})
         return {'type': 'ir.actions.act_window_close'}
 
+import simplejson
+
 class product_product(Model):
     _inherit = 'product.product'
 
@@ -204,9 +215,26 @@ class product_product(Model):
                 res[product.id] = True
         return res
 
+    def _get_procurements_json(self, cr, uid, ids, field_name, arg=None, context=None):
+        res = dict.fromkeys(ids, '')
+        for product in self.browse(cr, uid, ids, context=context):
+            procurement_orders = product.procurement_order_ids
+            if procurement_orders:
+                proc_dicc = {}
+                for procurement_order in procurement_orders:
+                    description = procurement_order.message or procurement_order.state
+                    proc_dicc.update({procurement_order.id: {'state':procurement_order.state,
+                                                             'description': description}})
+                res[product.id] = simplejson.dumps(proc_dicc)
+        return res
+
     _columns = {
-        'available_in_posi': fields.boolean('Available in the Point of Stock Inventory', help='Check if you want this product to appear in the Point of Stock Inventory'),
+        'available_in_posi': fields.boolean('Available in the Point of Stock Inventory',
+                                    help='Check if you want this product to appear in the Point of Stock Inventory'),
         'qty_alert': fields.function(_quantity_alert, type='boolean', string='Quantity Alert'),
+        'procurements_json_str': fields.function(_get_procurements_json, string='Order Procurements JSON', type='char',
+                                                 size=10000000),
+        'procurement_order_ids': fields.one2many('procurement.order', 'product_id', 'Order Procurements'),
     }
 
     _defaults = {

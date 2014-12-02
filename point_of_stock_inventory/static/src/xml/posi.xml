@@ -11,21 +11,26 @@
                     <span class="placeholder-UsernameWidget"></span>
                 </div>
                 <div class="pos-rightheader">
+                    <div class="order-selector">
+                        <!--<button class="order-button square neworder-button"><img src='/point_of_sale/static/src/img/plus.png' /></button>-->
+                        <!--<button class="order-button square deleteorder-button"><img src='/point_of_sale/static/src/img/minus.png' /></button>-->
+                        <!--<span class="orders"></span>-->
+                    </div>
                     <!-- here goes header buttons -->
                 </div>
             </div>
 
             <div class="pos-content">
 
-                <!--<div class="pos-leftpane">-->
-                    <!--<div class='window'>-->
-                        <!--<div class='subwindow'>-->
-                            <!--<div class='subwindow-container'>-->
-                                <!--<div class='subwindow-container-fix'>-->
-                                    <!--<div class="placeholder-OrderWidget"></div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                <div class="pos-leftpane">
+                    <div class='window'>
+                        <div class='subwindow'>
+                            <div class='subwindow-container'>
+                                <div class='subwindow-container-fix'>
+                                    <div class="placeholder-ProductLeftActWidget"></div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!--<div class='subwindow collapsed'>-->
                             <!--<div class='subwindow-container'>-->
@@ -36,15 +41,15 @@
                             <!--</div>-->
                         <!--</div>-->
 
-                        <!--<div class='subwindow collapsed'>-->
-                            <!--<div class='subwindow-container'>-->
-                                <!--<div class='subwindow-container-fix'>-->
-                                    <!--<div class='placeholder-LeftActionBar'></div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
+                        <div class='subwindow collapsed'>
+                            <div class='subwindow-container'>
+                                <div class='subwindow-container-fix'>
+                                    <div class='placeholder-LeftActionBar'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="rightpane">
                     <div class='window'>
@@ -448,19 +453,30 @@
     <t t-name="PosiProduct">
         <span class='product' t-att-data-product-id="product.id">
             <div class="product-img">
-                <t t-if="!product.qty_alert">
+                <t t-if="product.procurements_json_str.length == 0">
+                    <!--<t t-if="!product.qty_alert">-->
+                        <!--<img t-att-src='image_url' />-->
+                        <!--<span class="qty-tag-ok">-->
+                            <!--<t t-esc="'qty: ' + product.qty_available"/>-->
+                        <!--</span>-->
+                     <!--</t>-->
+                    <!--<t t-if="product.qty_alert">-->
+                        <!--<img t-att-src='image_url' />-->
+                        <!--<span class="qty-tag-alert">-->
+                            <!--<t t-esc="'qty: ' + product.qty_available"/>-->
+                        <!--</span>-->
+                    <!--</t>-->
                     <img t-att-src='image_url' />
-                    <span class="qty-tag-ok">
+                    <span t-attf-class="#{!product.qty_alert?'qty-tag-ok':'qty-tag-alert'}">
                         <t t-esc="'qty: ' + product.qty_available"/>
                     </span>
-                 </t>
-                <t t-if="product.qty_alert">
+                </t>
+                <t t-if="product.procurements_json_str.length !== 0">
                     <img t-att-src='image_url' />
-                    <span class="qty-tag-alert">
+                    <span class="qty-tag-warn">
                         <t t-esc="'qty: ' + product.qty_available"/>
                     </span>
-                 </t>
-
+                </t>
             </div>
             <div class="product-name">
                 <t t-esc="product.name"/>
@@ -468,30 +484,108 @@
         </span>
     </t>
 
-    <t t-name="OrderWidget">
-        <div class="order-container">
-            <div class="order-scroller touch-scrollable">
-                <div class="order">
-                    <ul class="orderlines">
-                        <t t-if="orderlines.length === 0">
-                            <li class="orderline empty">
-                                Your shopping cart is empty
-                            </li>
-                        </t>
-                    </ul>
-                    <div class="summary clearfix">
-                        <div t-attf-class="line #{orderlines.length === 0 ? 'empty' : ''}">
-                            <div class='entry total'>
-                                <span class="label">Total: </span> <span class="value">0.00 €</span>
-                                <div class='subentry'>Taxes: <span class="value">0.00€</span></div>
-                            </div>
+    <t t-name="ProductLeftActWidget">
+        <form id="form-add_product_qty" action="" method="post">
+            <input type="hidden" name="productid" id="productid" t-att-value="widget.product_id"/>
+            <div class="order-container">
+                <div class="order-scroller touch-scrollable">
+                    <div class="product-img-description"><img t-att-src='widget.image_url'/></div>
+                    <!--<div class="accordion" id="accordion2">-->
+                        <!--<div class="accordion-group">-->
+
+                            <!--<div class="accordion-heading">-->
+                               <!--<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">-->
+                                 <!--Description-->
+                               <!--</a>-->
+                             <!--</div>-->
+
+                            <!--<div id="collapseOne" class="accordion-body collapse in">-->
+                                <!--<div class="accordion-inner">-->
+                                    <t t-if="widget.description">
+                                        <div class="product-description-head"><h3>Description</h3></div>
+                                        <div class="product-description-text"><h4><t t-esc="widget.description"/></h4></div>
+                                    </t>
+                                    <t t-if="!widget.description">
+                                        <div class="product-description-head"><h3>Description</h3></div>
+                                        <div class="product-desciption-alert"><h4>This product have not a description</h4></div>
+                                    </t>
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <div class="product-description-text">
+                            <!--<ul id="myTab" class="nav nav-tabs">-->
+                               <!--<li class="active"><a href="#home" data-toggle="tab">Home</a></li>-->
+                               <!--<li><a href="#profile" data-toggle="tab">Profile</a></li>-->
+                             <!--</ul>-->
+                             <!--<div id="myTabContent" class="tab-content">-->
+                               <!--<div class="tab-pane fade in active" id="home">-->
+                                 <!--<p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>-->
+                               <!--</div>-->
+                               <!--<div class="tab-pane fade" id="profile">-->
+                                 <!--<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>-->
+                               <!--</div>-->
+                             <!--</div>-->
+                            <ul id="procurements">
+                                <div class="procurement-head"><h3> Procurement Exceptions</h3></div>
+                                <t t-foreach="widget.procurements" t-as="procurement">
+                                    <t t-if="procurement_value['state'] !== 'exception'">
+                                        <li class="procurement-exception-list"><h4><t  t-esc="procurement_value['description']"/></h4></li>
+                                    </t>
+                                    <t t-if="procurement_value['state'] == 'exception'">
+                                        <li class="procurement-exception-list-error"><h4><t  t-esc="procurement_value['description']"/></h4></li>
+                                    </t>
+                                </t>
+                                <t t-if="widget.procurements.length == 0">
+                                    <li class="procurement-exception-list-error"><h4>This product have not a procurement exception</h4></li>
+                                </t>
+                             </ul>
                         </div>
-                        <div class='clear'></div>
-                    </div>
+                        <div class="numpad">
+                            <div class="procurement-head"><h3>Quantity On Hand</h3></div>
+                            <div class="paymentline selected">
+                                <div class='paymentline-name'>
+                                    <h4>Product quantity</h4>
+                                </div>
+                                <input name='prodqty' id='prodqty' class='paymentline-input' type="number" step="1" t-att-value="widget.qty_available.toFixed(2)"/>
+                            </div>
+                            <a href="#" id="addqtybutton" class="btn btn-primary">Qty (+)</a>
+                            <!--<button type="submit" class="input-button-qty-controls number-char">Qty (-)</button>-->
+                        </div>
+
+                        <div class="modal-footer">
+                            <a href="#" id="proddetailsclosebutton" class="btn">Close</a>
+                        </div>
+                    <!--</div>-->
                 </div>
             </div>
-        </div>
+        </form>
     </t>
+
+    <!--<t t-name="OrderWidget">-->
+        <!--<div class="order-container">-->
+            <!--<div class="order-scroller touch-scrollable">-->
+                <!--<div class="order">-->
+                    <!--<ul class="orderlines">-->
+                        <!--<t t-if="orderlines.length === 0">-->
+                            <!--<li class="orderline empty">-->
+                                <!--Your shopping cart is empty-->
+                            <!--</li>-->
+                        <!--</t>-->
+                    <!--</ul>-->
+                    <!--<div class="summary clearfix">-->
+                        <!--<div t-attf-class="line #{orderlines.length === 0 ? 'empty' : ''}">-->
+                            <!--<div class='entry total'>-->
+                                <!--<span class="label">Total: </span> <span class="value">0.00 €</span>-->
+                                <!--<div class='subentry'>Taxes: <span class="value">0.00€</span></div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class='clear'></div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</t>-->
 
     <t t-name="DebugWidget">
         <div class="debug-widget">
@@ -616,7 +710,7 @@
 
     <t t-name="UsernameWidget">
         <span class="username">
-            <t t-esc="widget.get_name()" />
+            User:  <t t-esc="widget.get_name()" />
         </span>
     </t>
 
